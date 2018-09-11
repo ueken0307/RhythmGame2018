@@ -1,6 +1,24 @@
 #include "MusicSelection.hpp"
 
+#include <Windows.h>
+
 void MusicSelection::init() {
+  //---------get musics
+  WIN32_FIND_DATA findFileData;
+  HANDLE hFind;
+  TCHAR *target = TEXT("Musics\\*");
+
+  hFind = FindFirstFile(target, &findFileData);
+  if (hFind != INVALID_HANDLE_VALUE) {
+    do {
+      //ignore parent folder & current folder
+      if (wcscmp(findFileData.cFileName, L".") != 0 && wcscmp(findFileData.cFileName, L"..") != 0) {
+        printf("%ls\n", findFileData.cFileName);
+      }
+    } while (FindNextFile(hFind,&findFileData));
+    FindClose(hFind);
+  }
+  //----------
 
 }
 
