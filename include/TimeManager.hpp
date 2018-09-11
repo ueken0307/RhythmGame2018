@@ -1,0 +1,4 @@
+#ifndef TIME_MANAGER_HPP
+#define TIME_MANAGER_HPP
+
+#endif // TIME_MANAGER_HPP

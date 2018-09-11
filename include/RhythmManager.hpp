@@ -1,0 +1,4 @@
+#ifndef RHYTHM_MANAGER_HPP
+#define RHYTHM_MANAGER_HPP
+
+#endif // RHYTHM_MANAGER_HPP
