@@ -21,8 +21,8 @@ void Main(){
 
   //----------
   Window::SetTitle(L"高専祭2018");
-  ScalableWindow::Setup(1080, 1920);
-  Window::Resize(378,672);
+  ScalableWindow::Setup(1920,1080);
+  Window::Resize(672,378);
   Graphics::SetBackground(Color(40));
   //----------
   SceneManager<String,ShareData> scene;
