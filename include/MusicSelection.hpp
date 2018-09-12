@@ -5,6 +5,7 @@
 #include <HamFramework.hpp>
 
 #include "ShareData.hpp"
+#include "MusicInfo.hpp"
 
 class MusicSelection :public SceneManager<String, ShareData>::Scene {
 public:
@@ -15,6 +16,7 @@ public:
   void drawFadeOut(double) const override;
 
 private:
+  std::vector<MusicInfo> infos;
 
 };
 

@@ -14,6 +14,7 @@ void MusicSelection::init() {
       //ignore parent folder & current folder
       if (wcscmp(findFileData.cFileName, L".") != 0 && wcscmp(findFileData.cFileName, L"..") != 0) {
         printf("%ls\n", findFileData.cFileName);
+        infos.push_back(MusicInfo(findFileData.cFileName));
       }
     } while (FindNextFile(hFind,&findFileData));
     FindClose(hFind);
