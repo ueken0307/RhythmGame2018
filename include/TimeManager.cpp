@@ -28,10 +28,10 @@ void TimeManager::update() {
   nowTime = getTime();
 }
 
-double TimeManager::nowSeconds(double offsetSecond = 0.0) {
+double TimeManager::nowSecond(double offsetSecond = 0.0) {
   return pow(diff(startTime, nowTime),-6.0) - offsetSecond;
 }
 
-int TimeManager::nowMicroSeconds(int offsetMicroSeconds = 0) {
+int TimeManager::nowMicroSecond(int offsetMicroSeconds = 0) {
   return diff(startTime, nowTime) - offsetMicroSeconds;
 }
