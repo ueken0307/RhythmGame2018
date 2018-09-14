@@ -8,8 +8,8 @@ public:
   TimeManager();
   void start();
   void update();
-  double nowSeconds();
-  int nowMicroSeconds();
+  double nowSecond(double);
+  int nowMicroSecond(int);
   
 private:
   std::chrono::high_resolution_clock::time_point startTime;

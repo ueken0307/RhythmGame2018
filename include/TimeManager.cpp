@@ -1,5 +1,7 @@
 #include "TimeManager.hpp"
 
+#include <cmath>
+
 std::chrono::high_resolution_clock::time_point getTime() {
   return std::chrono::high_resolution_clock::now();
 }
@@ -26,10 +28,10 @@ void TimeManager::update() {
   nowTime = getTime();
 }
 
-double TimeManager::nowSeconds() {
-  return diff(startTime, nowTime)*0.000001;
+double TimeManager::nowSeconds(double offsetSecond = 0.0) {
+  return pow(diff(startTime, nowTime),-6.0) - offsetSecond;
 }
 
-int TimeManager::nowMicroSeconds() {
-  return diff(startTime, nowTime);
+int TimeManager::nowMicroSeconds(int offsetMicroSeconds = 0) {
+  return diff(startTime, nowTime) - offsetMicroSeconds;
 }
