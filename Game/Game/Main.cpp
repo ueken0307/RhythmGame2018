@@ -24,6 +24,7 @@ void Main(){
   ScalableWindow::Setup(1920,1080);
   Window::Resize(672,378);
   Graphics::SetBackground(Color(40));
+  Graphics::SetVSyncEnabled(false);
   //----------
   SceneManager<String,ShareData> scene;
   scene.add<MusicSelection>(L"MusicSelection");
