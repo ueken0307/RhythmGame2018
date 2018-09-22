@@ -13,11 +13,6 @@ public:
   double bpm;
 };
 
-BpmData::BpmData(int count,double bpm) {
-  this->count = count;
-  this->bpm = bpm;
-}
-
 class RhythmManager {
 public:
   RhythmManager(std::vector<BpmData>&,double);
@@ -27,6 +22,7 @@ public:
 
 private:
   std::vector<BpmData> bpmDatas;
+  std::vector<double> changeTimes;
   TimeManager timer;
   double offset;
   int bmsCount;
