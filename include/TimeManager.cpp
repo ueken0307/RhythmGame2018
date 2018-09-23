@@ -29,7 +29,7 @@ void TimeManager::update() {
 }
 
 double TimeManager::nowSecond(double offsetSecond = 0.0) {
-  return pow(diff(startTime, nowTime),-6.0) - offsetSecond;
+  return diff(startTime, nowTime) * pow(10.0,-6.0) - offsetSecond;
 }
 
 int TimeManager::nowMicroSecond(int offsetMicroSeconds = 0) {
