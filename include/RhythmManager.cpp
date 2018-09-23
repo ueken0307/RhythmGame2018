@@ -26,8 +26,15 @@ RhythmManager::RhythmManager(std::vector<BpmData> &bpmDatas,double offset = 0.0)
 
 void RhythmManager::start() {
   bmsCount = 0;
+  timer.start();
 }
 
 void RhythmManager::update() {
-  //calc bmscount
+  timer.update();
+
+  for (int i = 0; i < changeTimes.size(); ++i) {
+    if (changeTimes[i] <= timer.nowSecond(offset) ) {
+      bmsCount = bpmDatas[i].count + ((timer.nowSecond(offset) - changeTimes[i]) * (bpmDatas[i].bpm / 60.0) * 2400);
+    }
+  }
 }
