@@ -1,15 +1,13 @@
 #include "MusicInfo.hpp"
 
-MusicInfo::MusicInfo(String name) {
-  JSONReader reader(L"Musics/"+ name + L"/info.json");
+MusicInfo::MusicInfo(String title,String artist,String bpm,int offset,std::vector<int> playLevels) {
+  this->title = title;
+  this->artist = artist;
+  this->bpm = bpm;
+  this->offset = offset;
 
-  title = reader[L"title"].get<String>();
-  artist = reader[L"artist"].get<String>();
-  bpm = reader[L"bpm"].get<String>();
-  offset = reader[L"offset"].get<int32>();
-
-  for (const auto & i : reader[L"playLevel"].getArray()) {
-    playLevel.push_back(i.get<int32>());
+  for (const auto & i : playLevels) {
+    this->playLevels.push_back(i);
   }
 
 }

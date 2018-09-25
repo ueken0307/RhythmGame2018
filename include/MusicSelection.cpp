@@ -8,13 +8,34 @@ void MusicSelection::init() {
   HANDLE hFind;
   TCHAR *target = TEXT("Musics\\*");
 
+  printf("----------------------\n");
   hFind = FindFirstFile(target, &findFileData);
   if (hFind != INVALID_HANDLE_VALUE) {
     do {
       //ignore parent folder & current folder
       if (wcscmp(findFileData.cFileName, L".") != 0 && wcscmp(findFileData.cFileName, L"..") != 0) {
-        printf("%ls\n", findFileData.cFileName);
-        infos.push_back(MusicInfo(findFileData.cFileName));
+        printf("FolderName:%ls\n", findFileData.cFileName);
+
+        String name = findFileData.cFileName;
+        JSONReader reader(L"Musics/" + name + L"/info.json");
+
+        std::vector<int> tmpLevels;
+        for (const auto & i : reader[L"playLevel"].getArray()) {
+          tmpLevels.push_back(i.get<int32>());
+        }
+        infos.push_back(MusicInfo(reader[L"title"].get<String>(), reader[L"artist"].get<String>(),
+          reader[L"bpm"].get<String>(), reader[L"offset"].get<int32>(),tmpLevels));
+
+        printf("Title:%ls\n", infos[infos.size() - 1].getTitle().c_str());
+        printf("Artist:%ls\n", infos[infos.size() - 1].getArtist().c_str());
+        printf("Bpm:%ls\n", infos[infos.size() - 1].getBpm().c_str());
+        printf("Offset:%lf\n", infos[infos.size() - 1].getOffset());
+        printf("PlayLevels:");
+        for (const auto & i : infos[infos.size() - 1].getPlayLevels()) {
+          printf("%d,", i);
+        }
+        printf("\n----------------------\n");
+
       }
     } while (FindNextFile(hFind,&findFileData));
     FindClose(hFind);
