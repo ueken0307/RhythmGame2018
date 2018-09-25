@@ -6,7 +6,7 @@ void Result::init() {
 
 void Result::update() {
   if (Input::KeyRight.clicked) {
-    printf("Next scene is MusicSelection");
+    printf("Next scene is MusicSelection\n");
     changeScene(L"MusicSelection");
   }
 }

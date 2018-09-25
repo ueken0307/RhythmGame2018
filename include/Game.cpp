@@ -6,7 +6,7 @@ void Game::init() {
 
 void Game::update() {
   if (Input::KeyRight.clicked) {
-    printf("Next scene is Result");
+    printf("Next scene is Result\n");
     changeScene(L"Result");
   }
 }

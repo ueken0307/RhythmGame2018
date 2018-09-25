@@ -8,7 +8,7 @@ void MusicSelection::init() {
   HANDLE hFind;
   TCHAR *target = TEXT("Musics\\*");
 
-  printf("----------------------\n");
+  printf("\n-----LoadedInfos------\n");
   hFind = FindFirstFile(target, &findFileData);
   if (hFind != INVALID_HANDLE_VALUE) {
     do {
@@ -34,7 +34,7 @@ void MusicSelection::init() {
         for (const auto & i : infos[infos.size() - 1].getPlayLevels()) {
           printf("%d,", i);
         }
-        printf("\n----------------------\n");
+        printf("\n----------------------\n\n");
 
       }
     } while (FindNextFile(hFind,&findFileData));
@@ -46,7 +46,7 @@ void MusicSelection::init() {
 
 void MusicSelection::update() {
   if (Input::KeyRight.clicked) {
-    printf("Next scene is Game");
+    printf("Next scene is Game\n");
     changeScene(L"Game");
   }
 }
