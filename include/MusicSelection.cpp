@@ -39,6 +39,14 @@ void MusicSelection::init() {
       }
     } while (FindNextFile(hFind,&findFileData));
     FindClose(hFind);
+
+    nowSelect = 0;
+    if (static_cast<int>(infos.size())) {
+      printf("select:%ls\n", infos[nowSelect].getTitle().c_str());
+    }
+    else {
+      printf("Not found\n");
+    }
   }
   //----------
 
@@ -48,6 +56,16 @@ void MusicSelection::update() {
   if (Input::KeyRight.clicked) {
     printf("Next scene is Game\n");
     changeScene(L"Game");
+  }
+
+  if (static_cast<int>(infos.size()) && Input::KeyUp.clicked) {
+    nowSelect = (nowSelect + static_cast<int>(infos.size()) - 1) % static_cast<int>(infos.size());
+    printf("select:%ls\n", infos[nowSelect].getTitle().c_str());
+  }
+
+  if (static_cast<int>(infos.size()) && Input::KeyDown.clicked) {
+    nowSelect = (nowSelect + 1) % static_cast<int>(infos.size());
+    printf("select:%ls\n", infos[nowSelect].getTitle().c_str());
   }
 }
 

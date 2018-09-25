@@ -17,6 +17,7 @@ public:
 
 private:
   std::vector<MusicInfo> infos;
+  int nowSelect;
 
 };
 
