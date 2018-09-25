@@ -1,6 +1,6 @@
 #include "MusicInfo.hpp"
 
-MusicInfo::MusicInfo(String title,String artist,String bpm,int offset,std::vector<int> playLevels) {
+MusicInfo::MusicInfo(String title,String artist,String bpm,double offset,std::vector<int> playLevels) {
   this->title = title;
   this->artist = artist;
   this->bpm = bpm;

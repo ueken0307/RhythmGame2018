@@ -24,7 +24,7 @@ void MusicSelection::init() {
           tmpLevels.push_back(i.get<int32>());
         }
         infos.push_back(MusicInfo(reader[L"title"].get<String>(), reader[L"artist"].get<String>(),
-          reader[L"bpm"].get<String>(), reader[L"offset"].get<int32>(),tmpLevels));
+          reader[L"bpm"].get<String>(), reader[L"offset"].get<double>(),tmpLevels));
 
         printf("Title:%ls\n", infos[infos.size() - 1].getTitle().c_str());
         printf("Artist:%ls\n", infos[infos.size() - 1].getArtist().c_str());
