@@ -1,7 +1,7 @@
 #include "Game.hpp"
 
 void Game::init() {
-
+  printf("selected -> %ls\n",m_data->folderName.c_str());
 }
 
 void Game::update() {
