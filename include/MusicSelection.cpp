@@ -61,23 +61,23 @@ void MusicSelection::update() {
     changeScene(L"Game");
   }
 
-  if (static_cast<int>(infos.size()) && Input::KeyUp.clicked) {
+  if (Input::KeyUp.clicked && static_cast<int>(infos.size())) {
     selectMusic = (selectMusic + static_cast<int>(infos.size()) - 1) % static_cast<int>(infos.size());
     printf("select:%ls\n", infos[selectMusic].getTitle().c_str());
   }
 
-  if (static_cast<int>(infos.size()) && Input::KeyDown.clicked) {
+  if (Input::KeyDown.clicked && static_cast<int>(infos.size())) {
     selectMusic = (selectMusic + 1) % static_cast<int>(infos.size());
     printf("select:%ls\n", infos[selectMusic].getTitle().c_str());
   }
 
-  if (selectDiff < (static_cast<int>(infos[selectMusic].getPlayLevels().size()) - 1) &&
-    Input::KeyRight.clicked) {
+  if (Input::KeyRight.clicked && 
+    selectDiff < (static_cast<int>(infos[selectMusic].getPlayLevels().size()) - 1)) {
     selectDiff++;
     printf("select:%d(Lv:%d)\n", selectDiff, infos[selectMusic].getPlayLevels()[selectDiff]);
   }
 
-  if (0 < selectDiff && Input::KeyLeft.clicked) {
+  if (Input::KeyLeft.clicked && 0 < selectDiff) {
     selectDiff--;
     printf("select:%d(Lv:%d)\n", selectDiff, infos[selectMusic].getPlayLevels()[selectDiff]);
   }
