@@ -53,7 +53,7 @@ void MusicSelection::init() {
 }
 
 void MusicSelection::update() {
-  if (Input::KeyRight.clicked) {
+  if (Input::KeyEnter.clicked) {
     printf("Next scene is Game\n");
     m_data->folderName = infos[nowSelect].getTitle();
     changeScene(L"Game");
