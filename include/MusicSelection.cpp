@@ -40,9 +40,10 @@ void MusicSelection::init() {
     } while (FindNextFile(hFind,&findFileData));
     FindClose(hFind);
 
-    nowSelect = 0;
+    selectMusic = 0;
+    selectDiff = 0;
     if (static_cast<int>(infos.size())) {
-      printf("select:%ls\n", infos[nowSelect].getTitle().c_str());
+      printf("select:%ls\n", infos[selectMusic].getTitle().c_str());
     }
     else {
       printf("Not found\n");
@@ -53,21 +54,34 @@ void MusicSelection::init() {
 }
 
 void MusicSelection::update() {
-  if (Input::KeyEnter.clicked) {
+  if (Input::KeyEnter.clicked && infos[selectMusic].getPlayLevels()[selectDiff] != 0) {
     printf("Next scene is Game\n");
-    m_data->folderName = infos[nowSelect].getTitle();
+    m_data->folderName = infos[selectMusic].getTitle();
+    m_data->diffclut = selectDiff;
     changeScene(L"Game");
   }
 
   if (static_cast<int>(infos.size()) && Input::KeyUp.clicked) {
-    nowSelect = (nowSelect + static_cast<int>(infos.size()) - 1) % static_cast<int>(infos.size());
-    printf("select:%ls\n", infos[nowSelect].getTitle().c_str());
+    selectMusic = (selectMusic + static_cast<int>(infos.size()) - 1) % static_cast<int>(infos.size());
+    printf("select:%ls\n", infos[selectMusic].getTitle().c_str());
   }
 
   if (static_cast<int>(infos.size()) && Input::KeyDown.clicked) {
-    nowSelect = (nowSelect + 1) % static_cast<int>(infos.size());
-    printf("select:%ls\n", infos[nowSelect].getTitle().c_str());
+    selectMusic = (selectMusic + 1) % static_cast<int>(infos.size());
+    printf("select:%ls\n", infos[selectMusic].getTitle().c_str());
   }
+
+  if (selectDiff < (static_cast<int>(infos[selectMusic].getPlayLevels().size()) - 1) &&
+    Input::KeyRight.clicked) {
+    selectDiff++;
+    printf("select:%d(Lv:%d)\n", selectDiff, infos[selectMusic].getPlayLevels()[selectDiff]);
+  }
+
+  if (0 < selectDiff && Input::KeyLeft.clicked) {
+    selectDiff--;
+    printf("select:%d(Lv:%d)\n", selectDiff, infos[selectMusic].getPlayLevels()[selectDiff]);
+  }
+
 }
 
 void MusicSelection::draw() const {
