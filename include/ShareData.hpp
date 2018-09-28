@@ -5,7 +5,7 @@ class ShareData {
 
 public:
   String folderName;
-  int playLevel;
+  int diffclut;
 };
 
 #endif //SHARE_DATA_HPP
