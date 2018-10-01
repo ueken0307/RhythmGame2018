@@ -78,13 +78,10 @@ void MusicSelection::update() {
     }
 
     if (Input::KeyLeft.clicked && 0 < selectDiff) {
-
       selectDiff--;
       printf("select:%d(Lv:%d)\n", selectDiff, infos[selectMusic].getPlayLevels()[selectDiff]);
     }
   }
-
-  
 
 }
 
