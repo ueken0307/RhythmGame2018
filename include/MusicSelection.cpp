@@ -44,6 +44,7 @@ void MusicSelection::init() {
     selectDiff = 0;
     if (static_cast<int>(infos.size())) {
       printf("select:%ls\n", infos[selectMusic].getTitle().c_str());
+      printf("select:%d\n", infos[selectMusic].getPlayLevels()[selectDiff]);
     }
     else {
       printf("Not found\n");
