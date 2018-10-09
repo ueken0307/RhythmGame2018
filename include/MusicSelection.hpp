@@ -18,7 +18,7 @@ public:
 private:
   std::vector<MusicInfo> infos;
   int selectMusic;
-  int selectDiff;
+  int selectLevel;
 
 };
 

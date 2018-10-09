@@ -2,7 +2,7 @@
 
 void Game::init() {
   printf("selected -> %ls\n",m_data->folderName.c_str());
-  printf("selected -> %d\n", m_data->diffclut);
+  printf("selected -> %d\n", m_data->level);
 }
 
 void Game::update() {

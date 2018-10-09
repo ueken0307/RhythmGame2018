@@ -41,10 +41,10 @@ void MusicSelection::init() {
     FindClose(hFind);
 
     selectMusic = 0;
-    selectDiff = 0;
+    selectLevel = 0;
     if (static_cast<int>(infos.size())) {
       printf("select:%ls\n", infos[selectMusic].getTitle().c_str());
-      printf("select:%d(Lv:%d)\n", selectDiff, infos[selectMusic].getPlayLevels()[selectDiff]);
+      printf("select:%d(Lv:%d)\n", selectLevel, infos[selectMusic].getPlayLevels()[selectLevel]);
     }
     else {
       printf("Not found\n");
@@ -56,10 +56,10 @@ void MusicSelection::init() {
 
 void MusicSelection::update() {
   if (infos.size()) {
-    if (Input::KeyEnter.clicked && infos[selectMusic].getPlayLevels()[selectDiff] != 0) {
+    if (Input::KeyEnter.clicked && infos[selectMusic].getPlayLevels()[selectLevel] != 0) {
       printf("Next scene is Game\n");
       m_data->folderName = infos[selectMusic].getTitle();
-      m_data->diffclut = selectDiff;
+      m_data->level = selectLevel;
       changeScene(L"Game");
     }
 
@@ -73,14 +73,14 @@ void MusicSelection::update() {
       printf("select:%ls\n", infos[selectMusic].getTitle().c_str());
     }
 
-    if (Input::KeyRight.clicked && selectDiff < (static_cast<int>(infos[selectMusic].getPlayLevels().size()) - 1)) {
-      selectDiff++;
-      printf("select:%d(Lv:%d)\n", selectDiff, infos[selectMusic].getPlayLevels()[selectDiff]);
+    if (Input::KeyRight.clicked && selectLevel < (static_cast<int>(infos[selectMusic].getPlayLevels().size()) - 1)) {
+      selectLevel++;
+      printf("select:%d(Lv:%d)\n", selectLevel, infos[selectMusic].getPlayLevels()[selectLevel]);
     }
 
-    if (Input::KeyLeft.clicked && 0 < selectDiff) {
-      selectDiff--;
-      printf("select:%d(Lv:%d)\n", selectDiff, infos[selectMusic].getPlayLevels()[selectDiff]);
+    if (Input::KeyLeft.clicked && 0 < selectLevel) {
+      selectLevel--;
+      printf("select:%d(Lv:%d)\n", selectLevel, infos[selectMusic].getPlayLevels()[selectLevel]);
     }
   }
 
