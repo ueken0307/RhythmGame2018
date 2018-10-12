@@ -5,6 +5,8 @@
 #include <HamFramework.hpp>
 
 #include "ShareData.hpp"
+#include "RhythmManager.hpp"
+#include "RhythmGameManager.hpp"
 
 class Game :public SceneManager<String, ShareData>::Scene {
 public:
