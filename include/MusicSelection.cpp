@@ -23,7 +23,7 @@ void MusicSelection::init() {
         for (const auto & i : reader[L"playLevel"].getArray()) {
           tmpLevels.push_back(i.get<int32>());
         }
-        infos.push_back(MusicInfo(reader[L"title"].get<String>(), reader[L"artist"].get<String>(),
+        infos.push_back(MusicInfo(name,reader[L"title"].get<String>(), reader[L"artist"].get<String>(),
           reader[L"bpm"].get<String>(), reader[L"offset"].get<double>(),tmpLevels));
 
         printf("Title:%ls\n", infos[infos.size() - 1].getTitle().c_str());
@@ -58,7 +58,7 @@ void MusicSelection::update() {
   if (infos.size()) {
     if (Input::KeyEnter.clicked && infos[selectMusic].getPlayLevels()[selectLevel] != 0) {
       printf("Next scene is Game\n");
-      m_data->folderName = infos[selectMusic].getTitle();
+      m_data->folderName = infos[selectMusic].getFolderName();
       m_data->level = selectLevel;
       changeScene(L"Game");
     }
