@@ -3,9 +3,9 @@
 
 #include "RhythmManager.hpp"
 
-class Note {
+class NoteData {
 public:
-  Note(int, int, int);
+  NoteData(int, int, int);
   int count;
   int lane;
   int length;
@@ -17,7 +17,7 @@ public:
 
 private:
   RhythmManager rhythmManager;
-  std::vector<Note> notes;
+  std::vector<NoteData> notes;
 
 
 };
