@@ -20,6 +20,7 @@ public:
   void update();
   int getBmsCount() const { return bmsCount; };
   double getSecond() const { return timer.nowSecond(offset); }
+  double BtoS(int) const;
 
 private:
   std::vector<BpmData> bpmDatas;

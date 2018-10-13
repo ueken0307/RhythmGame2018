@@ -24,6 +24,18 @@ RhythmManager::RhythmManager(std::vector<BpmData> &bpmDatas,double offset = 0.0)
   this->bmsCount = 0;
 }
 
+double RhythmManager::BtoS(int count) const {
+  int tmp;
+  for (int i = 0; i < bpmDatas.size(); ++i) {
+    if (bpmDatas[i].count <= count) {
+      tmp = i;
+    } else {
+      break;
+    }
+  }
+  return changeTimes[tmp] + ((count - bpmDatas[tmp].count)/2400.0) * (60.0/bpmDatas[tmp].bpm);
+}
+
 void RhythmManager::start() {
   bmsCount = 0;
   timer.start();
