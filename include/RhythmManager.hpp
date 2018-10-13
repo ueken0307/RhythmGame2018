@@ -8,9 +8,10 @@
 
 class BpmData {
 public:
-  BpmData(int,double);
+  BpmData(int,double,int);
   int count;
   double bpm;
+  int beat;
 };
 
 class RhythmManager {

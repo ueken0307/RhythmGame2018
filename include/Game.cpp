@@ -13,7 +13,7 @@ void Game::init() {
 
   printf("---------bpm---------\n");
   for (const auto &i : reader[L"bpms"].getArray()) {
-    bpms.push_back(BpmData(i[L"time"].get<int32>(), i[L"bpm"].get<double>()));
+    bpms.push_back(BpmData(i[L"time"].get<int32>(), i[L"bpm"].get<double>(), i[L"beat"].get<int32>()));
     printf("time:%8d  bpm:%lf\n", i[L"time"].get<int32>(), i[L"bpm"].get<double>());
   }
 
