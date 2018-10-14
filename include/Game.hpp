@@ -17,7 +17,8 @@ public:
   void drawFadeOut(double) const override;
 
 private:
-
+  RhythmGameManager rhythmGameManager;
+  bool startFlag;
 };
 
 #endif // GAME_HPP

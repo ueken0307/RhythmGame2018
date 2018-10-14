@@ -22,6 +22,11 @@ void Game::init() {
     notes.push_back(NoteData(i[L"time"].get<int32>(), i[L"lane"].get<int32>(), i[L"length"].get<int32>()));
     printf("time:%8d  lane:%3d  length:%8d\n", i[L"time"].get<int32>(), i[L"lane"].get<int32>(), i[L"length"].get<int32>());
   }
+
+  startFlag = false;
+  rhythmGameManager = RhythmGameManager(notes,bpms,1.0);
+  printf("second:%lf\n", rhythmGameManager.getSecond());
+  printf("Bcount:%8d\n", rhythmGameManager.getBmsCount());
 }
 
 void Game::update() {
@@ -29,6 +34,18 @@ void Game::update() {
     printf("Next scene is Result\n");
     changeScene(L"Result");
   }
+
+  if (!startFlag && Input::KeySpace.clicked) {
+    rhythmGameManager.start(false);
+    startFlag = true;
+  }
+
+  if (startFlag) {
+    rhythmGameManager.update();
+    printf("second:%lf\n", rhythmGameManager.getSecond());
+    printf("Bcount:%8d\n", rhythmGameManager.getBmsCount());
+  }
+  
 }
 
 void Game::draw() const {
