@@ -16,7 +16,7 @@ int diff(std::chrono::high_resolution_clock::time_point start,
 
 TimeManager::TimeManager() {
   startTime = getTime();
-  nowTime = getTime();
+  nowTime = startTime;
 }
 
 void TimeManager::start() {
