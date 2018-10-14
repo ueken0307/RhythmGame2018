@@ -13,11 +13,17 @@ public:
 
 class RhythmGameManager {
 public:
-
+  RhythmGameManager() {};
+  RhythmGameManager(std::vector<NoteData>,std::vector<BpmData>,double);
+  void start(bool);
+  void update();
+  int getBmsCount() { return rhythmManager.getBmsCount(); };
+  double getSecond() { return rhythmManager.getSecond(); };
 
 private:
   RhythmManager rhythmManager;
   std::vector<NoteData> notes;
+  bool isAuto;
 
 
 };
