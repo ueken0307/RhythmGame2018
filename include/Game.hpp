@@ -17,7 +17,8 @@ public:
   void drawFadeOut(double) const override;
 
 private:
-  RhythmGameManager rhythmGameManager;
+  RhythmManager rhythmManager;
+  std::vector<NoteData> notes;
   bool startFlag;
 };
 

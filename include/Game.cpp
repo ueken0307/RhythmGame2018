@@ -4,7 +4,6 @@ void Game::init() {
   String levelStr[] = { L"easy",L"normal",L"hard" };
 
   std::vector<BpmData> bpms;
-  std::vector<NoteData> notes;
 
   printf("selected -> %ls\n",m_data->folderName.c_str());
   printf("selected -> %d\n", m_data->level);
@@ -24,9 +23,9 @@ void Game::init() {
   }
 
   startFlag = false;
-  rhythmGameManager = RhythmGameManager(notes,bpms,1.0);
-  printf("second:%lf\n", rhythmGameManager.getSecond());
-  printf("Bcount:%8d\n", rhythmGameManager.getBmsCount());
+  rhythmManager = RhythmManager(bpms,1.0);
+  printf("second:%lf\n", rhythmManager.getSecond());
+  printf("Bcount:%8d\n", rhythmManager.getBmsCount());
 }
 
 void Game::update() {
@@ -36,14 +35,14 @@ void Game::update() {
   }
 
   if (!startFlag && Input::KeySpace.clicked) {
-    rhythmGameManager.start(false);
+    rhythmManager.start();
     startFlag = true;
   }
 
   if (startFlag) {
-    rhythmGameManager.update();
-    printf("second:%lf\n", rhythmGameManager.getSecond());
-    printf("Bcount:%8d\n", rhythmGameManager.getBmsCount());
+    rhythmManager.update();
+    printf("second:%lf\n", rhythmManager.getSecond());
+    printf("Bcount:%8d\n", rhythmManager.getBmsCount());
   }
   
 }
