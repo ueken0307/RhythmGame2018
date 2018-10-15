@@ -5,11 +5,12 @@
 
 class NoteData {
 public:
-  NoteData(int, double,int, int);
+  NoteData(int count, double second, int lane, int length, bool isEndEffect = false);
   int count;
   double second;
   int lane;
   int length;
+  bool isEndEffect;
 };
 
 class RhythmGameManager {
