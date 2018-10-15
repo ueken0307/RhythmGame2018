@@ -6,7 +6,7 @@ void Game::init() {
     printf("%lf\n", speedSec[speedSec.size() - 1]);
   }
   //test
-  speed = 10;
+  speed = 16;
 
   String levelStr[] = { L"easy",L"normal",L"hard" };
 
@@ -127,7 +127,7 @@ void Game::drawNotes() const{
         Rect(wWidth - sideWidth - pedalLaneWidth, y - noteHeight / 2, pedalLaneWidth, noteHeight).draw(normal);
       } else {
         //4Œ®
-        Rect(sideWidth + pedalLaneWidth + i.lane * buttonLaneWidth, y - noteHeight / 2, buttonLaneWidth, noteHeight).draw(normal);
+        Rect(sideWidth + pedalLaneWidth + (i.lane - 1) * buttonLaneWidth, y - noteHeight / 2, buttonLaneWidth, noteHeight).draw(normal);
       }
 
     } else {
@@ -154,7 +154,7 @@ void Game::drawNotes() const{
         Rect(startX, endY - noteHeight / 2, pedalLaneWidth, noteHeight).draw(holdEnd);
 
       } else {//4Œ®
-        int startX = sideWidth + pedalLaneWidth + i.lane * buttonLaneWidth;
+        int startX = sideWidth + pedalLaneWidth + (i.lane - 1) * buttonLaneWidth;
 
         //’·‰Ÿ‚µ•”•ª
         Rect(startX + (buttonLaneWidth - buttonHoldWidth)/2, endY + noteHeight / 2, buttonHoldWidth, y - (endY + noteHeight)).draw(hold);
