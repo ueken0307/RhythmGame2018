@@ -5,9 +5,10 @@
 
 class MusicInfo {
 public:
-  MusicInfo(String,String, String, String, double, std::vector<int>);
+  MusicInfo(String,String,String, String, String, double, std::vector<int>);
 
   String getFolderName() const { return folderName; };
+  String getMusicFileName() const { return musicFileName; };
   String getTitle() const { return title; };
   String getArtist() const { return artist; };
   String getBpm() const { return bpm; };
@@ -17,6 +18,7 @@ public:
 
 private:
   String folderName;
+  String musicFileName;
   String title;
   String artist;
   String bpm;

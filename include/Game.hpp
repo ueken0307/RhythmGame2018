@@ -34,7 +34,7 @@ private:
   int pedalHoldWidth;
   int buttonHoldWidth;
 
-  Sound tapSound;
+  Sound music,tapSound;
 };
 
 #endif // GAME_HPP

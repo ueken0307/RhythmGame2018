@@ -23,7 +23,7 @@ void Game::init() {
     printf("time:%8d  bpm:%lf\n", i[L"time"].get<int32>(), i[L"bpm"].get<double>());
   }
 
-  rhythmManager = RhythmManager(bpms, 1.0);
+  rhythmManager = RhythmManager(bpms, m_data->offset);
 
   printf("---------note--------\n");
   for (const auto &i : reader[L"notes"].getArray()) {
@@ -44,6 +44,10 @@ void Game::init() {
   pedalHoldWidth = 100;
   buttonHoldWidth = 50;
 
+  music = Sound(L"Musics/" + m_data->folderName + L"/" + m_data->musicFileName);
+  tapSound.setLoop(false);
+  tapSound.setVolume(1.0);
+
   tapSound = Sound(L"button.mp3");
   tapSound.setLoop(false);
   tapSound.setVolume(1.0);
@@ -59,8 +63,9 @@ void Game::update() {
   }
 
   if (!startFlag && Input::KeySpace.clicked) {
-    rhythmManager.start();
     startFlag = true;
+    music.play();
+    rhythmManager.start();
   }
 
   if (startFlag) {
