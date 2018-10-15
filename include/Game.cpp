@@ -23,14 +23,16 @@ void Game::init() {
     printf("time:%8d  bpm:%lf\n", i[L"time"].get<int32>(), i[L"bpm"].get<double>());
   }
 
+  rhythmManager = RhythmManager(bpms, 1.0);
+
   printf("---------note--------\n");
   for (const auto &i : reader[L"notes"].getArray()) {
-    notes.push_back(NoteData(i[L"time"].get<int32>(), i[L"lane"].get<int32>(), i[L"length"].get<int32>()));
-    printf("time:%8d  lane:%3d  length:%8d\n", i[L"time"].get<int32>(), i[L"lane"].get<int32>(), i[L"length"].get<int32>());
+    notes.push_back(NoteData(i[L"time"].get<int32>(),rhythmManager.BtoS(i[L"time"].get<int32>()), i[L"lane"].get<int32>(), i[L"length"].get<int32>()));
+    printf("time:%8d  lane:%3d  length:%8d second:%lf\n", i[L"time"].get<int32>(), i[L"lane"].get<int32>(), i[L"length"].get<int32>(), rhythmManager.BtoS(i[L"time"].get<int32>()));
   }
 
   startFlag = false;
-  rhythmManager = RhythmManager(bpms,1.0);
+
   printf("second:%lf\n", rhythmManager.getSecond());
   printf("Bcount:%8d\n", rhythmManager.getBmsCount());
 }
