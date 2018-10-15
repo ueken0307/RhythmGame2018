@@ -33,6 +33,14 @@ void Game::init() {
 
   startFlag = false;
 
+  int wWidth = Window::BaseWidth();
+  int wHeight = Window::BaseHeight();
+  int pedalLaneWidth = 200;
+  int buttonLaneWidth = 100;
+  int allLaneWidth = pedalLaneWidth * 2 + buttonLaneWidth * 4;
+  int sideWidth = (wWidth - allLaneWidth) / 2;
+  int judgeLineY = 1000;
+
   printf("second:%lf\n", rhythmManager.getSecond());
   printf("Bcount:%8d\n", rhythmManager.getBmsCount());
 }
@@ -57,14 +65,6 @@ void Game::update() {
 }
 
 void Game::draw() const {
-  int wWidth = Window::BaseWidth();
-  int wHeight = Window::BaseHeight();
-  int pedalLaneWidth = 200;
-  int buttonLaneWidth = 100;
-  int allLaneWidth = pedalLaneWidth * 2 + buttonLaneWidth * 4;
-  int sideWidth = (wWidth - allLaneWidth) / 2;
-  int judgeLineY = 1000;
-
   //first
   Line(sideWidth, 0, sideWidth, wHeight).draw();
   //final

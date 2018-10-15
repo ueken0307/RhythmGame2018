@@ -23,6 +23,13 @@ private:
   std::vector<double> speedSec;
   int speed;
   bool startFlag;
+  int wWidth;
+  int wHeight;
+  int pedalLaneWidth;
+  int buttonLaneWidth;
+  int allLaneWidth;
+  int sideWidth;
+  int judgeLineY;
 };
 
 #endif // GAME_HPP
