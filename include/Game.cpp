@@ -61,6 +61,8 @@ void Game::draw() const {
   int buttonLaneWidth = 100;
   int allLaneWidth = pedalLaneWidth * 2 + buttonLaneWidth * 4;
   int sideWidth = (wWidth - allLaneWidth) / 2;
+  int judgeLineY = 1000;
+
   //first
   Line(sideWidth, 0, sideWidth, wHeight).draw();
   //final
@@ -69,6 +71,9 @@ void Game::draw() const {
   for (int i = 0; i < 5; ++i) {
     Line(sideWidth + pedalLaneWidth + i * buttonLaneWidth, 0, sideWidth + pedalLaneWidth + i * buttonLaneWidth, wHeight).draw();
   }
+  
+  //judgeLine
+  Line(sideWidth, judgeLineY, wWidth - sideWidth, judgeLineY).draw();
   
   drawNotes();
   
