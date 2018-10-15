@@ -16,9 +16,12 @@ public:
   void drawFadeIn(double) const override;
   void drawFadeOut(double) const override;
 
+  void drawNotes() const;
 private:
   RhythmManager rhythmManager;
   std::vector<NoteData> notes;
+  std::vector<double> speedSec;
+  int speed;
   bool startFlag;
 };
 

@@ -1,6 +1,13 @@
 #include "Game.hpp"
 
 void Game::init() {
+  for (int i = 20; i > 0; --i) {
+    speedSec.push_back(0.3*i);
+    printf("%lf\n", speedSec[speedSec.size() - 1]);
+  }
+  //test
+  speed = 10;
+
   String levelStr[] = { L"easy",L"normal",L"hard" };
 
   std::vector<BpmData> bpms;
@@ -48,6 +55,26 @@ void Game::update() {
 }
 
 void Game::draw() const {
+  int wWidth = Window::BaseWidth();
+  int wHeight = Window::BaseHeight();
+  int pedalLaneWidth = 200;
+  int buttonLaneWidth = 100;
+  int allLaneWidth = pedalLaneWidth * 2 + buttonLaneWidth * 4;
+  int sideWidth = (wWidth - allLaneWidth) / 2;
+  //first
+  Line(sideWidth, 0, sideWidth, wHeight).draw();
+  //final
+  Line(wWidth - sideWidth, 0, wWidth - sideWidth, wHeight).draw();
+  //secondÅ`
+  for (int i = 0; i < 5; ++i) {
+    Line(sideWidth + pedalLaneWidth + i * buttonLaneWidth, 0, sideWidth + pedalLaneWidth + i * buttonLaneWidth, wHeight).draw();
+  }
+  
+  drawNotes();
+  
+}
+
+void Game::drawNotes() const{
 
 }
 
