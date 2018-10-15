@@ -5,8 +5,9 @@
 
 class NoteData {
 public:
-  NoteData(int, int, int);
+  NoteData(int, double,int, int);
   int count;
+  double second;
   int lane;
   int length;
 };

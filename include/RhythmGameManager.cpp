@@ -1,7 +1,8 @@
 #include"RhythmGameManager.hpp"
 
-NoteData::NoteData(int count,int lane,int length) {
+NoteData::NoteData(int count,double second,int lane,int length) {
   this->count = count;
+  this->second = second;
   this->lane = lane;
   this->length = length;
 }
