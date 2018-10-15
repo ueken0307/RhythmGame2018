@@ -44,6 +44,10 @@ void Game::init() {
   pedalHoldWidth = 100;
   buttonHoldWidth = 50;
 
+  tapSound = Sound(L"button.mp3");
+  tapSound.setLoop(false);
+  tapSound.setVolume(1.0);
+
   printf("second:%lf\n", rhythmManager.getSecond());
   printf("Bcount:%8d\n", rhythmManager.getBmsCount());
 }
@@ -63,6 +67,14 @@ void Game::update() {
     rhythmManager.update();
     printf("second:%lf\n", rhythmManager.getSecond());
     printf("Bcount:%8d\n", rhythmManager.getBmsCount());
+  }
+
+  for (auto &i : notes) {
+    if (!i.isEndEffect && i.second <= rhythmManager.getSecond()) {
+      i.isEndEffect = true;
+      tapSound.stop();
+      tapSound.play();
+    }
   }
   
 }

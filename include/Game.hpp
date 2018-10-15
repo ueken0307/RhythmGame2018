@@ -33,6 +33,8 @@ private:
   int noteHeight;
   int pedalHoldWidth;
   int buttonHoldWidth;
+
+  Sound tapSound;
 };
 
 #endif // GAME_HPP
