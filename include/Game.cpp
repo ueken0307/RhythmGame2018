@@ -40,6 +40,9 @@ void Game::init() {
   allLaneWidth = pedalLaneWidth * 2 + buttonLaneWidth * 4;
   sideWidth = (wWidth - allLaneWidth) / 2;
   judgeLineY = 1000;
+  noteHeight = 10;
+  pedalHoldWidth = 100;
+  buttonHoldWidth = 50;
 
   printf("second:%lf\n", rhythmManager.getSecond());
   printf("Bcount:%8d\n", rhythmManager.getBmsCount());
@@ -65,6 +68,9 @@ void Game::update() {
 }
 
 void Game::draw() const {
+
+  drawNotes();
+
   //first
   Line(sideWidth, 0, sideWidth, wHeight).draw();
   //final
@@ -77,12 +83,71 @@ void Game::draw() const {
   //judgeLine
   Line(sideWidth, judgeLineY, wWidth - sideWidth, judgeLineY).draw();
   
-  drawNotes();
   
 }
 
 void Game::drawNotes() const{
 
+  ColorF normal(255,255,255), holdStart(0, 100, 200), holdEnd(0, 100, 200), hold(0, 160, 180);
+
+  for (const auto &i : notes) {
+    //ノーツのy座標
+    int y = static_cast<int>(judgeLineY - ((i.second - rhythmManager.getSecond())/speedSec[speed])*judgeLineY);
+
+    //まだ表示エリアに入っていないノーツは表示しない
+    if (y < -noteHeight) {
+      break;
+    }
+
+    //ノーツ描画
+    if (i.length == 0) {
+      //普通のノーツ
+      if (i.lane == 0) {
+        //左ペダル
+        Rect(sideWidth, y - noteHeight / 2, pedalLaneWidth, noteHeight).draw(normal);
+      } else if (i.lane == 5) {
+        //右ペダル
+        Rect(wWidth - sideWidth - pedalLaneWidth, y - noteHeight / 2, pedalLaneWidth, noteHeight).draw(normal);
+      } else {
+        //4鍵
+        Rect(sideWidth + pedalLaneWidth + i.lane * buttonLaneWidth, y - noteHeight / 2, buttonLaneWidth, noteHeight).draw(normal);
+      }
+
+    } else {
+      //長押し終点ノーツのy座標
+      int endY = static_cast<int>(judgeLineY - ((rhythmManager.BtoS(i.count + i.length) - rhythmManager.getSecond()) / speedSec[speed])*judgeLineY);
+
+      if (i.lane == 0) { //左ペダル
+
+        //長押し部分
+        Rect(sideWidth + (pedalLaneWidth - pedalHoldWidth)/2, endY + noteHeight / 2, pedalHoldWidth, y - (endY + noteHeight)).draw(hold);
+        //始点
+        Rect(sideWidth, y - noteHeight / 2, pedalLaneWidth, noteHeight).draw(holdStart);
+        //終点
+        Rect(sideWidth, endY - noteHeight / 2, pedalLaneWidth, noteHeight).draw(holdEnd);
+
+      } else if (i.lane == 5) {//右ペダル
+        int startX = wWidth - sideWidth - pedalLaneWidth;
+
+        //長押し部分
+        Rect(startX + (pedalLaneWidth - pedalHoldWidth) / 2, endY + noteHeight / 2, pedalHoldWidth, y - (endY + noteHeight)).draw(hold);
+        //始点
+        Rect(startX, y - noteHeight / 2, pedalLaneWidth, noteHeight).draw(holdStart);
+        //終点
+        Rect(startX, endY - noteHeight / 2, pedalLaneWidth, noteHeight).draw(holdEnd);
+
+      } else {//4鍵
+        int startX = sideWidth + pedalLaneWidth + i.lane * buttonLaneWidth;
+
+        //長押し部分
+        Rect(startX + (buttonLaneWidth - buttonHoldWidth)/2, endY + noteHeight / 2, buttonHoldWidth, y - (endY + noteHeight)).draw(hold);
+        //始点
+        Rect(startX, y - noteHeight / 2, buttonLaneWidth, noteHeight).draw(holdStart);
+        //終点
+        Rect(startX, endY - noteHeight / 2, buttonLaneWidth, noteHeight).draw(holdEnd);
+      }
+    }
+  }
 }
 
 void Game::drawFadeIn(double t) const {

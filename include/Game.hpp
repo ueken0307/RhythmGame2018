@@ -30,6 +30,9 @@ private:
   int allLaneWidth;
   int sideWidth;
   int judgeLineY;
+  int noteHeight;
+  int pedalHoldWidth;
+  int buttonHoldWidth;
 };
 
 #endif // GAME_HPP
