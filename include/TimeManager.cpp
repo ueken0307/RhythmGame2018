@@ -16,7 +16,7 @@ int diff(std::chrono::high_resolution_clock::time_point start,
 
 TimeManager::TimeManager() {
   startTime = getTime();
-  nowTime = getTime();
+  nowTime = startTime;
 }
 
 void TimeManager::start() {
@@ -28,10 +28,10 @@ void TimeManager::update() {
   nowTime = getTime();
 }
 
-double TimeManager::nowSecond(double offsetSecond = 0.0) {
+double TimeManager::nowSecond(double offsetSecond = 0.0) const {
   return diff(startTime, nowTime) * pow(10.0,-6.0) - offsetSecond;
 }
 
-int TimeManager::nowMicroSecond(int offsetMicroSeconds = 0) {
+int TimeManager::nowMicroSecond(int offsetMicroSeconds = 0) const {
   return diff(startTime, nowTime) - offsetMicroSeconds;
 }

@@ -16,8 +16,25 @@ public:
   void drawFadeIn(double) const override;
   void drawFadeOut(double) const override;
 
+  void drawNotes() const;
 private:
+  RhythmManager rhythmManager;
+  std::vector<NoteData> notes;
+  std::vector<double> speedSec;
+  int speed;
+  bool startFlag;
+  int wWidth;
+  int wHeight;
+  int pedalLaneWidth;
+  int buttonLaneWidth;
+  int allLaneWidth;
+  int sideWidth;
+  int judgeLineY;
+  int noteHeight;
+  int pedalHoldWidth;
+  int buttonHoldWidth;
 
+  Sound music,tapSound;
 };
 
 #endif // GAME_HPP

@@ -8,17 +8,21 @@
 
 class BpmData {
 public:
-  BpmData(int,double);
+  BpmData(int,double,int);
   int count;
   double bpm;
+  int beat;
 };
 
 class RhythmManager {
 public:
+  RhythmManager() {};
   RhythmManager(std::vector<BpmData>&,double);
   void start();
   void update();
   int getBmsCount() const { return bmsCount; };
+  double getSecond() const { return timer.nowSecond(offset); }
+  double BtoS(int) const;
 
 private:
   std::vector<BpmData> bpmDatas;
