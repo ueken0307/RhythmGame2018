@@ -5,7 +5,7 @@
 
 class MusicInfo {
 public:
-  MusicInfo(String,String,String, String, String, double, std::vector<int>);
+  MusicInfo(String folderName, String musicFileName, String title, String artist, String bpm, double offset, std::vector<int> playLevels);
 
   String getFolderName() const { return folderName; };
   String getMusicFileName() const { return musicFileName; };

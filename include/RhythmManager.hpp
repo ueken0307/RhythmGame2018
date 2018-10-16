@@ -8,7 +8,7 @@
 
 class BpmData {
 public:
-  BpmData(int,double,int);
+  BpmData(int count, double bpm, int beay);
   int count;
   double bpm;
   int beat;
@@ -17,12 +17,12 @@ public:
 class RhythmManager {
 public:
   RhythmManager() {};
-  RhythmManager(std::vector<BpmData>&,double);
+  RhythmManager(std::vector<BpmData> &bpmDatas, double offset);
   void start();
   void update();
   int getBmsCount() const { return bmsCount; };
   double getSecond() const { return timer.nowSecond(offset); }
-  double BtoS(int) const;
+  double BtoS(int count) const;
 
 private:
   std::vector<BpmData> bpmDatas;
