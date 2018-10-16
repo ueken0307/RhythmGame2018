@@ -12,8 +12,8 @@ public:
   void init() override;
   void update() override;
   void draw() const override;
-  void drawFadeIn(double) const override;
-  void drawFadeOut(double) const override;
+  void drawFadeIn(double t) const override;
+  void drawFadeOut(double t) const override;
 
 private:
   std::vector<MusicInfo> infos;

@@ -14,7 +14,7 @@ RhythmGameManager::RhythmGameManager(std::vector<NoteData> notes, std::vector<Bp
   }
 }
 
-void RhythmGameManager::start(bool isAuto = false) {
+void RhythmGameManager::start(bool isAuto) {
   this->isAuto = isAuto;
   rhythmManager.start();
 }
