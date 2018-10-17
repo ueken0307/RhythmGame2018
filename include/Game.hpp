@@ -6,7 +6,7 @@
 
 #include "ShareData.hpp"
 #include "RhythmManager.hpp"
-#include "RhythmGameManager.hpp"
+#include "NoteData.hpp"
 
 class Game :public SceneManager<String, ShareData>::Scene {
 public:
