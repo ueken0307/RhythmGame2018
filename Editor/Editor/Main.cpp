@@ -2,7 +2,7 @@
 #include<Windows.h>
 
 #include"RhythmManager.hpp"
-#include"RhythmGameManager.hpp"
+#include"NoteData.hpp"
 
 
 void Main(){
