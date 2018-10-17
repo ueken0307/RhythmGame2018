@@ -1,5 +1,9 @@
 ﻿#include<Siv3D.hpp>
-#include <Windows.h>
+#include<Windows.h>
+
+#include"RhythmManager.hpp"
+#include"RhythmGameManager.hpp"
+
 
 void Main(){
 
