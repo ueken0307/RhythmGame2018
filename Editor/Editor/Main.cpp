@@ -4,17 +4,24 @@
 #include"RhythmManager.hpp"
 #include"NoteData.hpp"
 
+void update();
 void play();
 void draw();
 void drawEdit(int sX,int sY);
 void drawPlay(int sX, int sY);
 
+std::vector<std::vector<Rect>> clickNote;
+std::vector<std::vector<Rect>> editDrawNote;
+std::vector<std::vector<bool>> noteIsClicked;
 
-int buttonLWidth = 40;
-int pedalWidth = 2 * buttonLWidth;
-int height32 = 20;
-int width = 2 * pedalWidth + 4 * buttonLWidth;
-int height = 640;
+int buttonWidth = 40;
+int pedalWidth = 2 * buttonWidth;
+int editNoteHeight = 20;
+int editWidth = 2 * pedalWidth + 4 * buttonWidth;
+int editHeight = 640;
+
+int editStartX = 10;
+int editStartY = 10;
 
 
 void Main(){
@@ -34,8 +41,36 @@ void Main(){
   Graphics::SetBackground(Color(40));
   Graphics::SetVSyncEnabled(false);
   //----------
+
+  for (int i = 0; i < 32; ++i) {
+    std::vector<Rect> tmpC;
+    std::vector<Rect> tmpD;
+    std::vector<bool>tmpFlag;
+
+    int cY = editStartY + editNoteHeight * i ;
+    int dY = editStartY + editNoteHeight * i + editNoteHeight / 2;
+
+    for (int j = 0; j < 6; ++j){
+      tmpFlag.push_back(false);
+      if (j == 0) {
+        tmpC.push_back(Rect(editStartX,cY, pedalWidth, editNoteHeight));
+        tmpD.push_back(Rect(editStartX, dY, pedalWidth, editNoteHeight / 2));
+      } else if (j == 5) {
+        tmpC.push_back(Rect(editStartX + pedalWidth + 4 * buttonWidth, cY, pedalWidth, editNoteHeight));
+        tmpD.push_back(Rect(editStartX + pedalWidth + 4 * buttonWidth, dY, pedalWidth, editNoteHeight / 2));
+      } else {
+        tmpC.push_back(Rect(editStartX + pedalWidth + (j - 1) * buttonWidth, cY, buttonWidth, editNoteHeight));
+        tmpD.push_back(Rect(editStartX + pedalWidth + (j - 1) * buttonWidth, dY, buttonWidth, editNoteHeight / 2));
+      }
+    }
+
+    clickNote.push_back(tmpC);
+    editDrawNote.push_back(tmpD);
+    noteIsClicked.push_back(tmpFlag);
+  }
   
   while (System::Update()){
+    update();
     draw();
   }
 
@@ -47,32 +82,53 @@ void Main(){
 
 }
 
+void update() {
+  for (int i = 0; i < 32; ++i) {
+    for (int j = 0; j < 6; ++j) {
+      if (clickNote[i][j].leftClicked) {
+        if (noteIsClicked[i][j]) {
+          noteIsClicked[i][j] = false;
+        } else {
+          noteIsClicked[i][j] = true;
+        }
+      }
+    }
+  }
+}
+
 void play() {
 
 }
 
 void draw() {
-  drawEdit(10,10);
+  drawEdit(editStartX,editStartY);
   drawPlay(0,0);
 }
 
 void drawEdit(int sX, int sY) {
+  for (int i = 0; i < 32; ++i) {
+    for (int j = 0; j < 6; ++j) {
+      if (noteIsClicked[i][j]) {
+        editDrawNote[i][j].draw(Color(0, 255, 0));
+      }
+    }
+  }
 
   //topLine
-  Line(sX, sY,sX + width,sY).draw();
+  Line(sX, sY,sX + editWidth,sY).draw();
   //bottomLine
-  Line(sX, sY + height, sX + width, sY + height).draw();
+  Line(sX, sY + editHeight, sX + editWidth, sY + editHeight).draw();
   //leftLine
-  Line(sX, sY, sX, sY + height).draw();
+  Line(sX, sY, sX, sY + editHeight).draw();
   //rightLine
-  Line(sX + width, sY, sX + width, sY + height).draw();
+  Line(sX + editWidth, sY, sX + editWidth, sY + editHeight).draw();
 
   for (int i = 0; i < 5; ++i) {
-    Line(sX + pedalWidth + i * buttonLWidth, sY, sX + pedalWidth + i * buttonLWidth, sY + height).draw();
+    Line(sX + pedalWidth + i * buttonWidth, sY, sX + pedalWidth + i * buttonWidth, sY + editHeight).draw();
   }
 
   for (int i = 1; i < 32; ++i) {
-    Line(sX, sY + i*height32, sX + width, sY + i*height32).draw();
+    Line(sX, sY + i*editNoteHeight, sX + editWidth, sY + i*editNoteHeight).draw();
   }
 
 }
