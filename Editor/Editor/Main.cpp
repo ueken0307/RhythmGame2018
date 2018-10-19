@@ -10,8 +10,33 @@ void draw();
 void drawEdit(int sX,int sY);
 void drawPlay(int sX, int sY);
 
-std::vector<std::vector<Rect>> clickNote;
-std::vector<std::vector<Rect>> editDrawNote;
+class EditNoteData {
+public:
+  EditNoteData() {};
+  EditNoteData(int x, int y, int length) { this->x = x; this->y = y; this->length = length; };
+  int x, y;
+  int length;
+};
+
+class EditBpmData {
+public:
+  EditBpmData() {};
+  EditBpmData(int y, double bpm, int beat) { this->y = y; this->bpm = bpm; this->beat = beat; };
+  int y;
+  double bpm;
+  int beat;
+};
+
+class Measure {
+public:
+  std::vector<EditNoteData> notes;
+  std::vector<EditBpmData> bpms;
+};
+
+std::vector<Measure> measures;
+
+std::vector<std::vector<Rect>> clickRect;
+std::vector<std::vector<Rect>> drawRect;
 std::vector<std::vector<bool>> noteIsClicked;
 
 int buttonWidth = 40;
@@ -64,8 +89,8 @@ void Main(){
       }
     }
 
-    clickNote.push_back(tmpC);
-    editDrawNote.push_back(tmpD);
+    clickRect.push_back(tmpC);
+    drawRect.push_back(tmpD);
     noteIsClicked.push_back(tmpFlag);
   }
   
@@ -85,7 +110,7 @@ void Main(){
 void update() {
   for (int i = 0; i < 32; ++i) {
     for (int j = 0; j < 6; ++j) {
-      if (clickNote[i][j].leftClicked) {
+      if (clickRect[i][j].leftClicked) {
         if (noteIsClicked[i][j]) {
           noteIsClicked[i][j] = false;
         } else {
@@ -109,7 +134,7 @@ void drawEdit(int sX, int sY) {
   for (int i = 0; i < 32; ++i) {
     for (int j = 0; j < 6; ++j) {
       if (noteIsClicked[i][j]) {
-        editDrawNote[i][j].draw(Color(0, 255, 0));
+        drawRect[i][j].draw(Color(0, 255, 0));
       }
     }
   }
