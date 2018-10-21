@@ -38,15 +38,18 @@ public:
   std::vector<EditBpmData> bpms;
 };
 
+class EditRects {
+public:
+  std::vector<std::vector<Rect>> click;
+  std::vector<std::vector<Rect>> draw;
+  std::vector<std::vector<bool>> isClicked;
+};
+
 std::vector<Measure> measures;
 int currentMeasure = 0;
 
-std::vector<std::vector<Rect>> clickRect32;
-std::vector<std::vector<Rect>> clickRect24;
-std::vector<std::vector<Rect>> drawRect32;
-std::vector<std::vector<Rect>> drawRect24;
-std::vector<std::vector<bool>> noteIsClicked32;
-std::vector<std::vector<bool>> noteIsClicked24;
+EditRects edit32;
+EditRects edit24;
 
 std::vector<Rect> splitButtons;
 std::vector<Texture> splitPics;
@@ -107,9 +110,9 @@ void Main(){
       }
     }
 
-    clickRect32.push_back(tmpC);
-    drawRect32.push_back(tmpD);
-    noteIsClicked32.push_back(tmpFlag);
+    edit32.click.push_back(tmpC);
+    edit32.draw.push_back(tmpD);
+    edit32.isClicked.push_back(tmpFlag);
   }
 
   for (int i = 0; i < 24; ++i) {
@@ -136,9 +139,9 @@ void Main(){
       }
     }
 
-    clickRect24.push_back(tmpC);
-    drawRect24.push_back(tmpD);
-    noteIsClicked24.push_back(tmpFlag);
+    edit24.click.push_back(tmpC);
+    edit24.draw.push_back(tmpD);
+    edit24.isClicked.push_back(tmpFlag);
   }
 
   for (int i = 0; i < 8; ++i) {
@@ -170,9 +173,9 @@ void update() {
   if (split % 3 == 0) {
     for (int i = 0; i < 24; ++i) {
       for (int j = 0; j < 6; ++j) {
-        if (clickRect24[i][j].leftClicked) {
+        if (edit24.click[i][j].leftClicked) {
           int index = (i / (24 / split) + 1)*(24 / split) - 1;
-          noteIsClicked24[index][j] = !noteIsClicked24[index][j];
+          edit24.isClicked[index][j] = !edit24.isClicked[index][j];
         }
       }
     }
@@ -180,9 +183,9 @@ void update() {
   else {
     for (int i = 0; i < 32; ++i) {
       for (int j = 0; j < 6; ++j) {
-        if (clickRect32[i][j].leftClicked) {
+        if (edit32.click[i][j].leftClicked) {
           int index = (i / (32 / split) + 1)*(32 / split) - 1;
-          noteIsClicked32[index][j] = !noteIsClicked32[index][j];
+          edit32.isClicked[index][j] = !edit32.isClicked[index][j];
         }
       }
     }
@@ -209,15 +212,15 @@ void drawEdit(int sX, int sY) {
 
   for (int i = 0; i < 24; ++i) {
     for (int j = 0; j < 6; ++j) {
-      if (noteIsClicked24[i][j]) {
-        drawRect24[i][j].draw(ColorF(0, 255, 0,0.5));
+      if (edit24.isClicked[i][j]) {
+        edit24.draw[i][j].draw(ColorF(0, 255, 0,0.5));
       }
     }
   }
   for (int i = 0; i < 32; ++i) {
     for (int j = 0; j < 6; ++j) {
-      if (noteIsClicked32[i][j]) {
-        drawRect32[i][j].draw(ColorF(255, 0, 0,0.5));
+      if (edit32.isClicked[i][j]) {
+        edit32.draw[i][j].draw(ColorF(255, 0, 0,0.5));
       }
     }
   }
