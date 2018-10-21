@@ -78,6 +78,8 @@ int moveStartY = editStartY + editHeight + 10;
 
 Font f20;
 
+GUI jumpGUI;
+
 void Main(){
 
 #ifdef _DEBUG
@@ -167,6 +169,14 @@ void Main(){
 
   f20 = Font(20);
 
+  jumpGUI = GUI(GUIStyle::Default);
+  jumpGUI.setTitle(L"移動先の小節");
+  jumpGUI.addln(L"targetMeasure", GUITextField::Create(4));
+  jumpGUI.add(L"ok", GUIButton::Create(L"移動"));
+  jumpGUI.add(L"cancel", GUIButton::Create(L"キャンセル"));
+  jumpGUI.setCenter(Point(Window::Width()/2,Window::Height()/2));
+  jumpGUI.show(false);
+
   while (System::Update()){
     update();
     draw();
@@ -186,6 +196,22 @@ void update() {
   }
   if (Input::KeyLeft.clicked  || moveButtons[0].leftClicked) {
     prevMeasure();
+  }
+  if (moveButtons[2].leftClicked) {
+    jumpGUI.textField(L"targetMeasure").setText(ToString(currentMeasure + 1));
+    jumpGUI.show(true);
+  }
+
+  if (jumpGUI.button(L"ok").pressed) {
+    int num = Parse<int>(jumpGUI.textField(L"targetMeasure").text);
+    if (num > 0) {
+      jumpMeasure(num -1);
+    }
+    jumpGUI.show(false);
+  }
+
+  if (jumpGUI.button(L"cancel").pressed) {
+    jumpGUI.show(false);
   }
 
   for (int i = 0; i < 8; ++i) {
