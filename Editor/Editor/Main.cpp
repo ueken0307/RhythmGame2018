@@ -149,6 +149,9 @@ void Main(){
     splitPics.push_back(Texture(L"/11" + ToString(i)));
   }
   
+  //first measure
+  measures.resize(1);
+
   while (System::Update()){
     update();
     draw();
@@ -170,11 +173,29 @@ void update() {
       
   }
 
+  //ノーツ追加・削除処理
   if (split % 3 == 0) {
     for (int i = 0; i < 24; ++i) {
       for (int j = 0; j < 6; ++j) {
         if (edit24.click[i][j].leftClicked) {
           int index = (i / (24 / split))*(24 / split);
+          auto & cM = measures[currentMeasure];
+
+          if (edit24.isClicked[index][j]) {
+            //対応するノーツを削除
+            for (int k = 0; k < cM.notes.size(); ++k) {
+              auto &cN = cM.notes[k];
+              if (cN.x == j && index == ((24 / cN.split)*cN.y)) {
+                cM.notes.erase(cM.notes.begin() + k);
+                break;
+              }
+            }
+          }
+          else {
+            //ノーツ追加
+            cM.notes.push_back(EditNoteData(split, i / (24 / split), j, 0));
+          }
+          //isClickedを反転
           edit24.isClicked[index][j] = !edit24.isClicked[index][j];
         }
       }
@@ -185,6 +206,23 @@ void update() {
       for (int j = 0; j < 6; ++j) {
         if (edit32.click[i][j].leftClicked) {
           int index = (i / (32 / split))*(32 / split);
+          auto & cM = measures[currentMeasure];
+
+          if (edit32.isClicked[index][j]) {
+            //対応するノーツを削除
+            for (int k = 0; k < cM.notes.size(); ++k) {
+              auto &cN = cM.notes[k];
+              if (cN.x == j && index == ((32 / cN.split)*cN.y)) {
+                cM.notes.erase(cM.notes.begin() + k);
+                break;
+              }
+            }
+          }
+          else {
+            //ノーツ追加
+            cM.notes.push_back(EditNoteData(split, i / (32 / split), j, 0));
+          }
+          //isClickedを反転
           edit32.isClicked[index][j] = !edit32.isClicked[index][j];
         }
       }
