@@ -47,6 +47,7 @@ public:
   std::vector<std::vector<Rect>> click;
   std::vector<std::vector<Rect>> draw;
   std::vector<std::vector<bool>> isClicked;
+  std::vector<bool> isBpmClicked;
 };
 
 std::vector<Measure> measures;
@@ -82,7 +83,7 @@ editStartX + pedalWidth + buttonWidth * 4 };
 
 int split = 8;
 int splitList[] = {4,8,16,32,3,6,12,24};
-int splitStartX = editStartX + editWidth + 10;
+int splitStartX = editStartX + editWidth + 120;
 int splitStartY = editStartY;
 
 int moveStartX = (editWidth / 2) + editStartX - (40 / 2) * 3 - 10;
@@ -95,9 +96,12 @@ int noteTypeStartY = splitStartY + 50 * 8 + 30;
 bool longFlag = false;
 int longX = 0, longY = 0, longSplit = 0;
 
-Font f20;
+bool bpmFlag = false;
+int bpmY = 0;
 
-GUI jumpGUI,longGUI;
+Font f10,f20;
+
+GUI jumpGUI,longGUI,bpmGUI;
 
 void Main(){
 
@@ -142,6 +146,7 @@ void Main(){
     edit32.click.push_back(tmpC);
     edit32.draw.push_back(tmpD);
     edit32.isClicked.push_back(tmpFlag);
+    edit32.isBpmClicked.push_back(false);
   }
 
   for (int i = 24-1; i >= 0; --i) {
@@ -171,6 +176,7 @@ void Main(){
     edit24.click.push_back(tmpC);
     edit24.draw.push_back(tmpD);
     edit24.isClicked.push_back(tmpFlag);
+    edit24.isBpmClicked.push_back(false);
   }
 
   for (int i = 0; i < 8; ++i) {
@@ -192,6 +198,7 @@ void Main(){
   measures.resize(1);
 
   f20 = Font(20);
+  f10 = Font(10);
 
   jumpGUI = GUI(GUIStyle::Default);
   jumpGUI.setTitle(L"移動先の小節");
@@ -211,6 +218,17 @@ void Main(){
   longGUI.add(L"cancel", GUIButton::Create(L"キャンセル"));
   longGUI.setCenter(Point(Window::Width() / 2, Window::Height() / 2));
   longGUI.show(false);
+
+  bpmGUI = GUI(GUIStyle::Default);
+  bpmGUI.setTitle(L"BPM変化");
+  bpmGUI.add(GUIText::Create(L"BPM"));
+  bpmGUI.addln(L"bpm", GUITextField::Create(8));
+  bpmGUI.add(GUIText::Create(L"拍"));
+  bpmGUI.addln(L"beat", GUITextField::Create(2));
+  bpmGUI.add(L"ok", GUIButton::Create(L"決定"));
+  bpmGUI.add(L"cancel", GUIButton::Create(L"キャンセル"));
+  bpmGUI.setCenter(Point(Window::Width() / 2, Window::Height() / 2));
+  bpmGUI.show(false);
 
   while (System::Update()){
     if (longFlag) {
@@ -246,6 +264,42 @@ void Main(){
         longFlag = false;
         longGUI.show(false);
       }
+    }
+    else if (bpmFlag) {
+      //bpm変化入力時
+      if (bpmGUI.button(L"ok").pressed) {
+        double bpm = Parse<double>(bpmGUI.textField(L"bpm").text);
+        int beat = Parse<int>(bpmGUI.textField(L"beat").text);
+        if (bpm > 0 && beat > 0) {
+          measures[currentMeasure].bpms.push_back(EditBpmData(split,bpmY,bpm,beat));
+        }
+        else {
+          if (split % 3 == 0) {
+            //isBpmClickedを反転
+            edit24.isBpmClicked[bpmY * (24 / split)] = !edit24.isBpmClicked[bpmY * (24 / split)];
+          }
+          else {
+            //isBpmClickedを反転
+            edit32.isBpmClicked[bpmY * (32 / split)] = !edit32.isBpmClicked[bpmY * (32 / split)];
+          }
+        }
+        bpmFlag = false;
+        bpmGUI.show(false);
+      }
+
+      if (bpmGUI.button(L"cancel").pressed) {
+        if (split % 3 == 0) {
+          //isBpmClickedを反転
+          edit24.isBpmClicked[bpmY * (24 / split)] = !edit24.isBpmClicked[bpmY * (24 / split)];
+        }
+        else {
+          //isBpmClickedを反転
+          edit32.isBpmClicked[bpmY * (32 / split)] = !edit32.isBpmClicked[bpmY * (32 / split)];
+        }
+        bpmFlag = false;
+        bpmGUI.show(false);
+      }
+
     } else {
       update();
     }
@@ -298,80 +352,142 @@ void update() {
   }
 
   //ノーツ追加・削除処理
-  if (split % 3 == 0) {
-    for (int i = 0; i < 24; ++i) {
-      for (int j = 0; j < 6; ++j) {
-        if (edit24.click[i][j].leftClicked) {
-          int index = (i / (24 / split))*(24 / split);
-          auto & cM = measures[currentMeasure];
+  if (noteType!=2) {
+    if (split % 3 == 0) {
+      for (int i = 0; i < 24; ++i) {
+        for (int j = 0; j < 6; ++j) {
+          if (edit24.click[i][j].leftClicked) {
+            int index = (i / (24 / split))*(24 / split);
+            auto & cM = measures[currentMeasure];
 
-          if (edit24.isClicked[index][j]) {
-            //対応するノーツを削除
-            for (int k = 0; k < cM.notes.size(); ++k) {
-              auto &cN = cM.notes[k];
-              if (cN.x == j && index == ((24 / cN.split)*cN.y)) {
-                cM.notes.erase(cM.notes.begin() + k);
-                break;
+            if (edit24.isClicked[index][j]) {
+              //対応するノーツを削除
+              for (int k = 0; k < cM.notes.size(); ++k) {
+                auto &cN = cM.notes[k];
+                if (cN.x == j && index == ((24 / cN.split)*cN.y)) {
+                  cM.notes.erase(cM.notes.begin() + k);
+                  break;
+                }
               }
             }
-          }
-          else {
-            //ノーツ追加
-            if (noteType == 0) {
-              cM.notes.push_back(EditNoteData(split, i / (24 / split), j, 0));
-            } else if(noteType == 1){
-              longSplit = split;
-              longY = i / (24 / split);
-              longX = j;
-              longFlag = true;
-              longGUI.show(true);
+            else {
+              //ノーツ追加
+              if (noteType == 0) {
+                cM.notes.push_back(EditNoteData(split, i / (24 / split), j, 0));
+              }
+              else if (noteType == 1) {
+                longSplit = split;
+                longY = i / (24 / split);
+                longX = j;
+                longFlag = true;
+                longGUI.show(true);
+              }
+
             }
-            
+            //isClickedを反転
+            edit24.isClicked[index][j] = !edit24.isClicked[index][j];
           }
-          //isClickedを反転
-          edit24.isClicked[index][j] = !edit24.isClicked[index][j];
+        }
+      }
+    }
+    else {
+      for (int i = 0; i < 32; ++i) {
+        for (int j = 0; j < 6; ++j) {
+          if (edit32.click[i][j].leftClicked) {
+            int index = (i / (32 / split))*(32 / split);
+            auto & cM = measures[currentMeasure];
+
+            if (edit32.isClicked[index][j]) {
+              //対応するノーツを削除
+              for (int k = 0; k < cM.notes.size(); ++k) {
+                auto &cN = cM.notes[k];
+                if (cN.x == j && index == ((32 / cN.split)*cN.y)) {
+                  cM.notes.erase(cM.notes.begin() + k);
+                  break;
+                }
+              }
+            }
+            else {
+              //ノーツ追加
+              if (noteType == 0) {
+                cM.notes.push_back(EditNoteData(split, i / (32 / split), j, 0));
+              }
+              else if (noteType == 1) {
+                longSplit = split;
+                longY = i / (32 / split);
+                longX = j;
+                longFlag = true;
+                longGUI.show(true);
+              }
+
+            }
+            //isClickedを反転
+            edit32.isClicked[index][j] = !edit32.isClicked[index][j];
+          }
         }
       }
     }
   }
-  else {
-    for (int i = 0; i < 32; ++i) {
-      for (int j = 0; j < 6; ++j) {
-        if (edit32.click[i][j].leftClicked) {
-          int index = (i / (32 / split))*(32 / split);
-          auto & cM = measures[currentMeasure];
+  
+  //bpm変化追加・削除処理
+  if (noteType == 2) {
+    if (split % 3 == 0) {
+      for (int i = 0; i < 24; ++i) {
+        for (int j = 0; j < 6; ++j) {
+          if (edit24.click[i][j].leftClicked) {
+            int index = (i / (24 / split))*(24 / split);
+            auto & cM = measures[currentMeasure];
 
-          if (edit32.isClicked[index][j]) {
-            //対応するノーツを削除
-            for (int k = 0; k < cM.notes.size(); ++k) {
-              auto &cN = cM.notes[k];
-              if (cN.x == j && index == ((32 / cN.split)*cN.y)) {
-                cM.notes.erase(cM.notes.begin() + k);
-                break;
+            if (edit24.isBpmClicked[index]) {
+              //対応するbpm変化を削除
+              for (int k = 0; k < cM.bpms.size(); ++k) {
+                auto &cB = cM.bpms[k];
+                if (index == ((24 / cB.split)*cB.y)) {
+                  cM.bpms.erase(cM.bpms.begin() + k);
+                  break;
+                }
               }
             }
-          }
-          else {
-            //ノーツ追加
-            if (noteType == 0) {
-              cM.notes.push_back(EditNoteData(split, i / (32 / split), j, 0));
+            else {
+              bpmY = i / (24 / split);
+              bpmFlag = true;
+              bpmGUI.show(true);
             }
-            else if (noteType == 1) {
-              longSplit = split;
-              longY = i / (32 / split);
-              longX = j;
-              longFlag = true;
-              longGUI.show(true);
-            }
-            
+            //isClickedを反転
+            edit24.isBpmClicked[index] = !edit24.isBpmClicked[index];
           }
-          //isClickedを反転
-          edit32.isClicked[index][j] = !edit32.isClicked[index][j];
+        }
+      }
+    }
+    else {
+      for (int i = 0; i < 32; ++i) {
+        for (int j = 0; j < 6; ++j) {
+          if (edit32.click[i][j].leftClicked) {
+            int index = (i / (32 / split))*(32 / split);
+            auto & cM = measures[currentMeasure];
+
+            if (edit32.isBpmClicked[index]) {
+              //対応するbpm変化を削除
+              for (int k = 0; k < cM.bpms.size(); ++k) {
+                auto &cB = cM.bpms[k];
+                if (index == ((32 / cB.split)*cB.y)) {
+                  cM.bpms.erase(cM.bpms.begin() + k);
+                  break;
+                }
+              }
+            }
+            else {
+              bpmY = i / (32 / split);
+              bpmFlag = true;
+              bpmGUI.show(true);
+            }
+            //isClickedを反転
+            edit32.isBpmClicked[index] = !edit32.isBpmClicked[index];
+          }
         }
       }
     }
   }
-
 }
 
 void play() {
@@ -456,6 +572,21 @@ void drawEdit(int sX, int sY) {
           }
         }
       }
+    }
+  }
+
+  //bpm
+  for (auto &i : measures[currentMeasure].bpms) {
+    int bpmDrawOffsetX = 20;
+    int bpmDrawOffsetY = -15;
+    if (i.split % 3 == 0) {
+      Circle(editStartX + editWidth, editStartY + editNoteHeight24 * (24 - (24/i.split) * i.y),5).draw(ColorF(255,255,0));
+      f10(ToString(i.bpm) + L"(" + ToString(i.beat) + L")").draw(
+        Point(editStartX + editWidth + bpmDrawOffsetX, editStartY + editNoteHeight24 * (24 - (24 / i.split) * i.y ) + bpmDrawOffsetY), ColorF(255, 255, 0));
+    } else {
+      Circle(editStartX + editWidth, editStartY + editNoteHeight32 * (32 - (32 / i.split) * i.y), 5).draw(ColorF(255, 255, 0));
+      f10(ToString(i.bpm) + L"(" + ToString(i.beat) + L")").draw(
+        Point(editStartX + editWidth + bpmDrawOffsetX, editStartY + editNoteHeight32 * (32 - (32 / i.split) * i.y ) + bpmDrawOffsetY), ColorF(255, 255, 0));
     }
   }
 
