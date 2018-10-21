@@ -13,7 +13,7 @@ void drawPlay(int sX, int sY);
 class EditNoteData {
 public:
   EditNoteData() {};
-  EditNoteData(int x, int y, int length) { this->x = x; this->y = y; this->length = length; };
+  EditNoteData(int split,int x, int y, int length) { this->x = x; this->y = y; this->length = length; };
   int x, y;
   int length;
 };
@@ -21,7 +21,7 @@ public:
 class EditBpmData {
 public:
   EditBpmData() {};
-  EditBpmData(int y, double bpm, int beat) { this->y = y; this->bpm = bpm; this->beat = beat; };
+  EditBpmData(int split,int y, double bpm, int beat) { this->y = y; this->bpm = bpm; this->beat = beat; };
   int y;
   double bpm;
   int beat;
