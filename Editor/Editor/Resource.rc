@@ -53,6 +53,7 @@
 100		ICON	"Icon.ico"
 101		FILE	"Engine/Splash.png"
 
+//split
 110     FILE    "Pic/4.png"
 111     FILE    "Pic/8.png"
 112     FILE    "Pic/16.png"
@@ -61,3 +62,21 @@
 115     FILE    "Pic/6.png"
 116     FILE    "Pic/12.png"
 117     FILE    "Pic/24.png"
+
+//note type
+120     FILE    "Pic/normal.png"
+121     FILE    "Pic/long.png"
+122     FILE    "Pic/bpm.png"
+
+//move measure
+130     FILE    "Pic/prev.png"
+131     FILE    "Pic/next.png"
+132     FILE    "Pic/jump.png"
+
+//play
+140     FILE    "Pic/playCurrent.png"
+141     FILE    "Pic/playFirst.png"
+142     FILE    "Pic/stop.png"
+
+//info
+150     FILE    "Pic/info.png"
