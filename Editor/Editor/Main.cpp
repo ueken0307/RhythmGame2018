@@ -88,7 +88,7 @@ void Main(){
   Graphics::SetVSyncEnabled(false);
   //----------
 
-  for (int i = 0; i < 32; ++i) {
+  for (int i = 32-1; i >= 0; --i) {
     std::vector<Rect> tmpC;
     std::vector<Rect> tmpD;
     std::vector<bool>tmpFlag;
@@ -115,7 +115,7 @@ void Main(){
     edit32.isClicked.push_back(tmpFlag);
   }
 
-  for (int i = 0; i < 24; ++i) {
+  for (int i = 24-1; i >= 0; --i) {
     std::vector<Rect> tmpC;
     std::vector<Rect> tmpD;
     std::vector<bool>tmpFlag;
@@ -174,7 +174,7 @@ void update() {
     for (int i = 0; i < 24; ++i) {
       for (int j = 0; j < 6; ++j) {
         if (edit24.click[i][j].leftClicked) {
-          int index = (i / (24 / split) + 1)*(24 / split) - 1;
+          int index = (i / (24 / split))*(24 / split);
           edit24.isClicked[index][j] = !edit24.isClicked[index][j];
         }
       }
@@ -184,7 +184,7 @@ void update() {
     for (int i = 0; i < 32; ++i) {
       for (int j = 0; j < 6; ++j) {
         if (edit32.click[i][j].leftClicked) {
-          int index = (i / (32 / split) + 1)*(32 / split) - 1;
+          int index = (i / (32 / split))*(32 / split);
           edit32.isClicked[index][j] = !edit32.isClicked[index][j];
         }
       }
