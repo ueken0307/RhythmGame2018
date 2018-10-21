@@ -57,6 +57,8 @@ std::vector<Rect> splitButtons;
 std::vector<Texture> splitPics;
 std::vector<Rect> moveButtons;
 std::vector<Texture> movePics;
+std::vector<Rect> noteTypeButtons;
+std::vector<Texture> noteTypePics;
 
 int buttonWidth = 40;
 int pedalWidth = 2 * buttonWidth;
@@ -75,6 +77,10 @@ int splitStartY = editStartY;
 
 int moveStartX = (editWidth / 2) + editStartX - (40 / 2) * 3 - 10;
 int moveStartY = editStartY + editHeight + 10;
+
+int noteType = 0;
+int noteTypeStartX = splitStartX;
+int noteTypeStartY = splitStartY + 50 * 8 + 30;
 
 Font f20;
 
@@ -163,6 +169,11 @@ void Main(){
     moveButtons.push_back(Rect(moveStartX + i * 50, moveStartY, 40));
     movePics.push_back(Texture(L"/13" + ToString(i)));
   }
+
+  for (int i = 0; i < 3; ++i) {
+    noteTypeButtons.push_back(Rect(noteTypeStartX, noteTypeStartY + i * 50, 40));
+    noteTypePics.push_back(Texture(L"/12" + ToString(i)));
+  }
   
   //first measure
   measures.resize(1);
@@ -219,6 +230,12 @@ void update() {
       split = splitList[i];
     }
       
+  }
+
+  for (int i = 0; i < 3;++i) {
+    if (noteTypeButtons[i].leftClicked) {
+      noteType = i;
+    }
   }
 
   //ノーツ追加・削除処理
@@ -301,6 +318,13 @@ void drawEdit(int sX, int sY) {
   }
 
   f20(currentMeasure + 1).draw(moveStartX - 80, moveStartY);
+
+  for (int i = 0; i < 3; ++i) {
+    if (i == noteType) {
+      noteTypeButtons[i].draw(Color(150));
+    }
+    noteTypeButtons[i](noteTypePics[i]).draw();
+  }
 
   for (int i = 0; i < 24; ++i) {
     for (int j = 0; j < 6; ++j) {
