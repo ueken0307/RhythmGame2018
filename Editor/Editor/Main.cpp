@@ -9,6 +9,9 @@ void play();
 void draw();
 void drawEdit(int sX,int sY);
 void drawPlay(int sX, int sY);
+void nextMeasure();
+void prevMeasure();
+void jumpMeasure(int measure);
 
 class EditNoteData {
 public:
@@ -36,6 +39,7 @@ public:
 };
 
 std::vector<Measure> measures;
+int currentMeasure = 0;
 
 std::vector<std::vector<Rect>> clickRect32;
 std::vector<std::vector<Rect>> clickRect24;
@@ -244,5 +248,17 @@ void drawEdit(int sX, int sY) {
 }
 
 void drawPlay(int sX, int sY) {
+
+}
+
+void nextMeasure() {
+
+}
+
+void prevMeasure() {
+  
+}
+
+void jumpMeasure(int measure) {
 
 }
