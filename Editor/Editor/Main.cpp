@@ -18,9 +18,11 @@ void jumpMeasure(int measure);
 class EditNoteData {
 public:
   EditNoteData() {};
-  EditNoteData(int split, int y, int x, int length) { this->split = split; this->y = y; this->x = x; this->length = length; };
+  EditNoteData(int split, int y, int x, int longSplit = 0, int length = 0) {
+    this->split = split; this->y = y; this->x = x; this->longSplit = longSplit; this->length = length; };
   int split;
   int x, y;
+  int longSplit;
   int length;
 };
 
@@ -70,6 +72,14 @@ int editHeight = 96*6;
 int editNoteHeight32 = editHeight / 32;
 int editNoteHeight24 = editHeight / 24;
 
+int laneWidths[] = { pedalWidth,buttonWidth,buttonWidth,buttonWidth,buttonWidth,pedalWidth };
+int laneStartXs[] = { editStartX,
+editStartX + pedalWidth,
+editStartX + pedalWidth + buttonWidth * 1 ,
+editStartX + pedalWidth + buttonWidth * 2 ,
+editStartX + pedalWidth + buttonWidth * 3 ,
+editStartX + pedalWidth + buttonWidth * 4 };
+
 int split = 8;
 int splitList[] = {4,8,16,32,3,6,12,24};
 int splitStartX = editStartX + editWidth + 10;
@@ -82,9 +92,12 @@ int noteType = 0;
 int noteTypeStartX = splitStartX;
 int noteTypeStartY = splitStartY + 50 * 8 + 30;
 
+bool longFlag = false;
+int longX = 0, longY = 0, longSplit = 0;
+
 Font f20;
 
-GUI jumpGUI;
+GUI jumpGUI,longGUI;
 
 void Main(){
 
@@ -187,9 +200,55 @@ void Main(){
   jumpGUI.add(L"cancel", GUIButton::Create(L"キャンセル"));
   jumpGUI.setCenter(Point(Window::Width()/2,Window::Height()/2));
   jumpGUI.show(false);
+  
+  longGUI = GUI(GUIStyle::Default);
+  longGUI.setTitle(L"長押しの長さ");
+  longGUI.add(L"split", GUITextField::Create(3));
+  longGUI.add(GUIText::Create(L"分で"));
+  longGUI.add(L"length", GUITextField::Create(4));
+  longGUI.addln(GUIText::Create(L"拍"));
+  longGUI.add(L"ok", GUIButton::Create(L"決定"));
+  longGUI.add(L"cancel", GUIButton::Create(L"キャンセル"));
+  longGUI.setCenter(Point(Window::Width() / 2, Window::Height() / 2));
+  longGUI.show(false);
 
   while (System::Update()){
-    update();
+    if (longFlag) {
+      //ロングノーツ入力時
+      if (longGUI.button(L"ok").pressed) {
+        int sp = Parse<int>(longGUI.textField(L"split").text);
+        int len = Parse<int>(longGUI.textField(L"length").text);
+        if (sp > 0 && len > 0) {
+          measures[currentMeasure].notes.push_back(EditNoteData(longSplit,longY, longX,sp,len));
+        } else {
+          if (split % 3 == 0) {
+            //isClickedを反転
+            edit24.isClicked[longY * (24 / split)][longX] = !edit24.isClicked[longY * (24 / split)][longX];
+          }
+          else {
+            //isClickedを反転
+            edit32.isClicked[longY * (32 / split)][longX] = !edit32.isClicked[longY * (32 / split)][longX];
+          }
+        }
+        longFlag = false;
+        longGUI.show(false);
+      }
+
+      if (longGUI.button(L"cancel").pressed) {
+        if (split % 3 == 0) {
+          //isClickedを反転
+          edit24.isClicked[longY * (24 / split)][longX] = !edit24.isClicked[longY * (24 / split)][longX];
+        }
+        else {
+          //isClickedを反転
+          edit32.isClicked[longY * (32 / split)][longX] = !edit32.isClicked[longY * (32 / split)][longX];
+        }
+        longFlag = false;
+        longGUI.show(false);
+      }
+    } else {
+      update();
+    }
     draw();
   }
 
@@ -258,7 +317,16 @@ void update() {
           }
           else {
             //ノーツ追加
-            cM.notes.push_back(EditNoteData(split, i / (24 / split), j, 0));
+            if (noteType == 0) {
+              cM.notes.push_back(EditNoteData(split, i / (24 / split), j, 0));
+            } else if(noteType == 1){
+              longSplit = split;
+              longY = i / (24 / split);
+              longX = j;
+              longFlag = true;
+              longGUI.show(true);
+            }
+            
           }
           //isClickedを反転
           edit24.isClicked[index][j] = !edit24.isClicked[index][j];
@@ -285,7 +353,17 @@ void update() {
           }
           else {
             //ノーツ追加
-            cM.notes.push_back(EditNoteData(split, i / (32 / split), j, 0));
+            if (noteType == 0) {
+              cM.notes.push_back(EditNoteData(split, i / (32 / split), j, 0));
+            }
+            else if (noteType == 1) {
+              longSplit = split;
+              longY = i / (32 / split);
+              longX = j;
+              longFlag = true;
+              longGUI.show(true);
+            }
+            
           }
           //isClickedを反転
           edit32.isClicked[index][j] = !edit32.isClicked[index][j];
@@ -341,6 +419,45 @@ void drawEdit(int sX, int sY) {
     }
   }
   
+  //長押しノーツ
+  for (int i = 0; i <= currentMeasure; ++i) {
+    for (int j = 0; j < measures[i].notes.size(); ++j) {
+      auto &cN = measures[i].notes[j];
+      if (cN.length && cN.longSplit) {
+        int startBmsCount = i * 9600 + (9600.0 / cN.split)*cN.y;
+        int longBmsCount = (9600 / cN.longSplit)*cN.length;
+        //現在以前の長押しノーツの表示
+        if (startBmsCount + longBmsCount > currentMeasure * 9600) {
+          if (startBmsCount + longBmsCount - currentMeasure * 9600 <= 9600) {
+            //現在の小節で終端があるノーツ
+
+            int startY = editStartY + (editHeight - ((startBmsCount + longBmsCount - currentMeasure * 9600) / 9600.0) * 576);
+            if (startBmsCount < currentMeasure * 9600) {
+              //始点が現在の小節より前なら
+              Rect(laneStartXs[cN.x], startY, laneWidths[cN.x], ((startBmsCount + longBmsCount - currentMeasure * 9600) / 9600.0) * 576).draw(ColorF(0, 0, 255, 0.5));
+            }
+            else {
+              //始点が現在の小節なら
+              Rect(laneStartXs[cN.x], startY, laneWidths[cN.x], ((startBmsCount + longBmsCount - currentMeasure * 9600 - startBmsCount) / 9600.0) * 576).draw(ColorF(0, 0, 255, 0.5));
+            }
+
+
+          }
+          else {
+            //現在の小節で終わらないノーツ
+            if (startBmsCount < currentMeasure * 9600) {
+              //始点が現在の小節より前なら
+              Rect(laneStartXs[cN.x], editStartY, laneWidths[cN.x], editHeight).draw(ColorF(0, 0, 255, 0.5));
+            }
+            else {
+              //始点が現在の小節なら
+              Rect(laneStartXs[cN.x], editStartY, laneWidths[cN.x], editHeight - ((startBmsCount - currentMeasure * 9600) / 9600.0)*editHeight).draw(ColorF(0, 0, 255, 0.5));
+            }
+          }
+        }
+      }
+    }
+  }
 
   //topLine
   //Line(sX, sY,sX + editWidth,sY).draw();
