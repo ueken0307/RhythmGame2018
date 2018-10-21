@@ -9,6 +9,8 @@ void play();
 void draw();
 void drawEdit(int sX,int sY);
 void drawPlay(int sX, int sY);
+
+void generateIsClicked();
 void nextMeasure();
 void prevMeasure();
 void jumpMeasure(int measure);
@@ -166,6 +168,13 @@ void Main(){
 }
 
 void update() {
+  if (Input::KeyRight.clicked) {
+    nextMeasure();
+  }
+  if (Input::KeyLeft.clicked) {
+    prevMeasure();
+  }
+
   for (int i = 0; i < 8; ++i) {
     if (splitButtons[i].leftClicked) {
       split = splitList[i];
@@ -292,14 +301,54 @@ void drawPlay(int sX, int sY) {
 
 }
 
-void nextMeasure() {
+void generateIsClicked() {
+  //リセット処理
+  for (auto &i : edit24.isClicked) {
+    for (auto &j : i) {
+      j = false;
+    }
+  }
 
+  for (auto &i : edit32.isClicked) {
+    for (auto &j : i) {
+      j = false;
+    }
+  }
+
+  //notesから反映
+  for (const auto &i : measures[currentMeasure].notes) {
+    if (i.split % 3 == 0) {
+      edit24.isClicked[i.y * (24/i.split)][i.x] = true;
+    } else {
+      edit32.isClicked[i.y * (32 / i.split)][i.x] = true;
+    }
+  }
+}
+
+void nextMeasure() {
+  currentMeasure++;
+  if (currentMeasure >= measures.size()) {
+    //次の小節が存在しないとき
+    measures.resize(currentMeasure + 1);
+  }
+  //notesからisClickedに反映
+  generateIsClicked();
 }
 
 void prevMeasure() {
-  
+  if (0 <= currentMeasure-1) {
+    currentMeasure--;
+    //notesからisClickedに反映
+    generateIsClicked();
+  }
 }
 
 void jumpMeasure(int measure) {
-
+  currentMeasure = measure;
+  if (currentMeasure >= measures.size()) {
+    //ジャンプ先の小節が存在しないとき
+    measures.resize(currentMeasure + 1);
+  }
+  //notesからisClickedに反映
+  generateIsClicked();
 }
