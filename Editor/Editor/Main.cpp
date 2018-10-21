@@ -55,6 +55,8 @@ EditRects edit24;
 
 std::vector<Rect> splitButtons;
 std::vector<Texture> splitPics;
+std::vector<Rect> moveButtons;
+std::vector<Texture> movePics;
 
 int buttonWidth = 40;
 int pedalWidth = 2 * buttonWidth;
@@ -71,6 +73,10 @@ int splitList[] = {4,8,16,32,3,6,12,24};
 int splitStartX = editStartX + editWidth + 10;
 int splitStartY = editStartY;
 
+int moveStartX = (editWidth / 2) + editStartX - (40 / 2) * 3 - 10;
+int moveStartY = editStartY + editHeight + 10;
+
+Font f20;
 
 void Main(){
 
@@ -150,9 +156,16 @@ void Main(){
     splitButtons.push_back(Rect(splitStartX, splitStartY + i * 50, 40));
     splitPics.push_back(Texture(L"/11" + ToString(i)));
   }
+
+  for (int i = 0; i < 3; ++i) {
+    moveButtons.push_back(Rect(moveStartX + i * 50, moveStartY, 40));
+    movePics.push_back(Texture(L"/13" + ToString(i)));
+  }
   
   //first measure
   measures.resize(1);
+
+  f20 = Font(20);
 
   while (System::Update()){
     update();
@@ -168,10 +181,10 @@ void Main(){
 }
 
 void update() {
-  if (Input::KeyRight.clicked) {
+  if (Input::KeyRight.clicked || moveButtons[1].leftClicked) {
     nextMeasure();
   }
-  if (Input::KeyLeft.clicked) {
+  if (Input::KeyLeft.clicked  || moveButtons[0].leftClicked) {
     prevMeasure();
   }
 
@@ -256,6 +269,12 @@ void drawEdit(int sX, int sY) {
     }
     splitButtons[i](splitPics[i]).draw();
   }
+
+  for (int i = 0; i < 3; ++i) {
+    moveButtons[i](movePics[i]).draw();
+  }
+
+  f20(currentMeasure + 1).draw(moveStartX - 80, moveStartY);
 
   for (int i = 0; i < 24; ++i) {
     for (int j = 0; j < 6; ++j) {
