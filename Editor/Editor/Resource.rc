@@ -52,3 +52,12 @@
 // App Resource
 100		ICON	"Icon.ico"
 101		FILE	"Engine/Splash.png"
+
+110     FILE    "Pic/4.png"
+111     FILE    "Pic/8.png"
+112     FILE    "Pic/16.png"
+113     FILE    "Pic/32.png"
+114     FILE    "Pic/3.png"
+115     FILE    "Pic/6.png"
+116     FILE    "Pic/12.png"
+117     FILE    "Pic/24.png"
