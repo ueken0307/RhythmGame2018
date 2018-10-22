@@ -868,11 +868,11 @@ void saveFile(String folderName, String fileName) {
     indent(1);
     fprintf_s(fp, "]\n");
     fprintf_s(fp, "}");
+    fclose(fp);
   }
   else {
     printf("Can not open\n");
   }
-  fclose(fp);
 }
 
 void genelateData(std::vector<BpmData> &bpms,std::vector<NoteData> &notes) {
