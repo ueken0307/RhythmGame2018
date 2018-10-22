@@ -771,7 +771,7 @@ void import(String folderName,String fileName) {
         measures.resize((time / 9600) + 1);
       }
 
-      if ((time % 9600) % (9600/24) == 0) {
+      if ((time % 9600) % (9600 / 24) == 0 && (time % 9600) % (9600 / 32) != 0) {
         measures[time  / 9600].bpms.push_back(
           EditBpmData(24, (time % 9600) / (9600 / 24), i[L"bpm"].get<double>(), i[L"beat"].get<int32>()));
         printf("24,%d,%lf,%d\n", (time % 9600) / (9600 / 24), i[L"bpm"].get<double>(), i[L"beat"].get<int32>());
