@@ -5,8 +5,8 @@ class ShareData {
 
 public:
   String folderName;
+  String fileName;
   String musicFileName;
-  int level;
   double offset;
 };
 
