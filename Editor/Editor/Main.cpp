@@ -98,6 +98,8 @@ int noteType = 0;
 int noteTypeStartX = splitStartX;
 int noteTypeStartY = splitStartY + 50 * 8 + 30;
 
+bool jumpFlag = false;
+
 bool longFlag = false;
 int longX = 0, longY = 0, longSplit = 0;
 
@@ -267,7 +269,22 @@ void Main(){
   saveGUI.show(false);
 
   while (System::Update()){
-    if (longFlag) {
+    if (jumpFlag) {
+      if (jumpGUI.button(L"ok").pressed) {
+        int num = Parse<int>(jumpGUI.textField(L"targetMeasure").text);
+        if (num > 0) {
+          jumpMeasure(num - 1);
+        }
+        jumpGUI.show(false);
+        jumpFlag = false;
+      }
+
+      if (jumpGUI.button(L"cancel").pressed) {
+        jumpGUI.show(false);
+        jumpFlag = false;
+      }
+    }
+    else if (longFlag) {
       //ロングノーツ入力時
       if (longGUI.button(L"ok").pressed) {
         int sp = Parse<int>(longGUI.textField(L"split").text);
@@ -391,18 +408,7 @@ void update() {
   if (moveButtons[2].leftClicked) {
     jumpGUI.textField(L"targetMeasure").setText(ToString(currentMeasure + 1));
     jumpGUI.show(true);
-  }
-
-  if (jumpGUI.button(L"ok").pressed) {
-    int num = Parse<int>(jumpGUI.textField(L"targetMeasure").text);
-    if (num > 0) {
-      jumpMeasure(num -1);
-    }
-    jumpGUI.show(false);
-  }
-
-  if (jumpGUI.button(L"cancel").pressed) {
-    jumpGUI.show(false);
+    jumpFlag = true;
   }
 
   for (int i = 0; i < 8; ++i) {
