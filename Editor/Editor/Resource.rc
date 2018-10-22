@@ -80,3 +80,7 @@
 
 //info
 150     FILE    "Pic/info.png"
+
+//save import
+160     FILE    "Pic/import.png"
+161     FILE    "Pic/save.png"

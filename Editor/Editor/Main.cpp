@@ -67,6 +67,8 @@ std::vector<Rect> moveButtons;
 std::vector<Texture> movePics;
 std::vector<Rect> noteTypeButtons;
 std::vector<Texture> noteTypePics;
+Rect importButton,saveButton;
+Texture importPic,savePic;
 
 int buttonWidth = 40;
 int pedalWidth = 2 * buttonWidth;
@@ -104,9 +106,12 @@ int longX = 0, longY = 0, longSplit = 0;
 bool bpmFlag = false;
 int bpmY = 0;
 
+bool importFlag = false;
+bool saveFlag = false;
+
 Font f10,f20;
 
-GUI jumpGUI,longGUI,bpmGUI;
+GUI jumpGUI,longGUI,bpmGUI,importGUI,saveGUI;
 
 void Main(){
 
@@ -199,6 +204,12 @@ void Main(){
     noteTypePics.push_back(Texture(L"/12" + ToString(i)));
   }
   
+  importButton = Rect(splitStartX + 100, splitStartY, 40);
+  importPic = Texture(L"/160");
+
+  saveButton = Rect(splitStartX + 100,splitStartY + 50,40);
+  savePic = Texture(L"/161");
+
   //first measure
   measures.resize(1);
 
@@ -234,6 +245,28 @@ void Main(){
   bpmGUI.add(L"cancel", GUIButton::Create(L"キャンセル"));
   bpmGUI.setCenter(Point(Window::Width() / 2, Window::Height() / 2));
   bpmGUI.show(false);
+
+  importGUI = GUI(GUIStyle::Default);
+  importGUI.setTitle(L"読み込み");
+  importGUI.add(GUIText::Create(L"フォルダ名"));
+  importGUI.addln(L"folderName", GUITextField::Create(20));
+  importGUI.add(GUIText::Create(L"ファイル名"));
+  importGUI.addln(L"fileName", GUITextField::Create(20));
+  importGUI.add(L"ok", GUIButton::Create(L"決定"));
+  importGUI.add(L"cancel", GUIButton::Create(L"キャンセル"));
+  importGUI.setCenter(Point(Window::Width() / 2, Window::Height() / 2));
+  importGUI.show(false);
+
+  saveGUI = GUI(GUIStyle::Default);
+  saveGUI.setTitle(L"保存");
+  saveGUI.add(GUIText::Create(L"フォルダ名"));
+  saveGUI.addln(L"folderName", GUITextField::Create(20));
+  saveGUI.add(GUIText::Create(L"ファイル名"));
+  saveGUI.addln(L"fileName", GUITextField::Create(20));
+  saveGUI.add(L"ok", GUIButton::Create(L"決定"));
+  saveGUI.add(L"cancel", GUIButton::Create(L"キャンセル"));
+  saveGUI.setCenter(Point(Window::Width() / 2, Window::Height() / 2));
+  saveGUI.show(false);
 
   while (System::Update()){
     if (longFlag) {
@@ -305,7 +338,38 @@ void Main(){
         bpmGUI.show(false);
       }
 
-    } else {
+    }
+    else if(importFlag) {
+      if (importGUI.button(L"ok").pressed) {
+        String folderName = importGUI.textField(L"folderName").text;
+        String fileName = importGUI.textField(L"fileName").text;
+        import(folderName, fileName);
+
+        importFlag = false;
+        importGUI.show(false);
+      }
+
+      if (importGUI.button(L"cancel").pressed) {
+        importFlag = false;
+        importGUI.show(false);
+      }
+    }
+    else if (saveFlag) {
+      if (saveGUI.button(L"ok").pressed) {
+        String folderName = saveGUI.textField(L"folderName").text;
+        String fileName = saveGUI.textField(L"fileName").text;
+        saveFile(folderName, fileName);
+
+        saveFlag = false;
+        saveGUI.show(false);
+      }
+
+      if (saveGUI.button(L"cancel").pressed) {
+        saveFlag = false;
+        saveGUI.show(false);
+      }
+    }
+    else {
       update();
     }
     draw();
@@ -354,6 +418,16 @@ void update() {
     if (noteTypeButtons[i].leftClicked) {
       noteType = i;
     }
+  }
+
+  if (importButton.leftClicked) {
+    importGUI.show(true);
+    importFlag = true;
+  }
+
+  if (saveButton.leftClicked) {
+    saveGUI.show(true);
+    saveFlag = true;
   }
 
   //ノーツ追加・削除処理
@@ -524,6 +598,9 @@ void drawEdit(int sX, int sY) {
     }
     noteTypeButtons[i](noteTypePics[i]).draw();
   }
+
+  importButton(importPic).draw();
+  saveButton(savePic).draw();
 
   for (int i = 0; i < 24; ++i) {
     for (int j = 0; j < 6; ++j) {
