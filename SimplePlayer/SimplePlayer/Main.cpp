@@ -3,6 +3,7 @@
 #include <Windows.h>
 
 #include "ShareData.hpp"
+#include "SimpleSelection.hpp"
 #include "Game.hpp"
 
 
@@ -25,6 +26,7 @@ void Main() {
   Graphics::SetVSyncEnabled(false);
   //----------
   SceneManager<String, ShareData> scene;
+  scene.add<SimpleSelection>(L"SimpleSelection");
   scene.add<Game>(L"Game");
   //----------  
 
