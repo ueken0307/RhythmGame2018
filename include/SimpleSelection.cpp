@@ -11,6 +11,8 @@ void SimpleSelection::init(){
   gui.setCenter(Point(Window::Width() / 2, Window::Height() / 2));
   gui.show(true);
 
+  gui.textField(L"folderName").setText(m_data->folderName);
+  gui.textField(L"fileName").setText(m_data->fileName);
 }
 
 void SimpleSelection::update(){
