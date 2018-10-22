@@ -10,7 +10,7 @@ void draw();
 void drawEdit(int sX,int sY);
 void drawPlay(int sX, int sY);
 
-void import(String folderName,int diff);
+void import(String folderName,String fileName);
 
 void generateIsClicked();
 void nextMeasure();
@@ -672,11 +672,10 @@ void jumpMeasure(int measure) {
   generateIsClicked();
 }
 
-void import(String folderName,int diff) {
+void import(String folderName,String fileName) {
   currentMeasure = 0;
 
-  String diffStr[] = { L"easy",L"noamal" ,L"hard"};
-  JSONReader reader(L"Musics/" + folderName + L"/" + diffStr[diff] + L".json");
+  JSONReader reader(L"Musics/" + folderName + L"/" + fileName + L".json");
   if (reader.isOpened()) {
     printf("---------bpm---------\n");
     for (const auto &i : reader[L"bpms"].getArray()) {
