@@ -271,7 +271,7 @@ void Main(){
 
   while (System::Update()){
     if (jumpFlag) {
-      if (jumpGUI.button(L"ok").pressed) {
+      if (jumpGUI.button(L"ok").pushed) {
         int num = Parse<int>(jumpGUI.textField(L"targetMeasure").text);
         if (num > 0) {
           jumpMeasure(num - 1);
@@ -280,14 +280,14 @@ void Main(){
         jumpFlag = false;
       }
 
-      if (jumpGUI.button(L"cancel").pressed) {
+      if (jumpGUI.button(L"cancel").pushed) {
         jumpGUI.show(false);
         jumpFlag = false;
       }
     }
     else if (longFlag) {
       //ロングノーツ入力時
-      if (longGUI.button(L"ok").pressed) {
+      if (longGUI.button(L"ok").pushed) {
         int sp = Parse<int>(longGUI.textField(L"split").text);
         int len = Parse<int>(longGUI.textField(L"length").text);
         if (sp > 0 && len > 0) {
@@ -306,7 +306,7 @@ void Main(){
         longGUI.show(false);
       }
 
-      if (longGUI.button(L"cancel").pressed) {
+      if (longGUI.button(L"cancel").pushed) {
         if (split % 3 == 0) {
           //isClickedを反転
           edit24.isClicked[longY * (24 / split)][longX] = !edit24.isClicked[longY * (24 / split)][longX];
@@ -321,7 +321,7 @@ void Main(){
     }
     else if (bpmFlag) {
       //bpm変化入力時
-      if (bpmGUI.button(L"ok").pressed) {
+      if (bpmGUI.button(L"ok").pushed) {
         double bpm = Parse<double>(bpmGUI.textField(L"bpm").text);
         int beat = Parse<int>(bpmGUI.textField(L"beat").text);
         if (bpm > 0 && beat > 0) {
@@ -341,7 +341,7 @@ void Main(){
         bpmGUI.show(false);
       }
 
-      if (bpmGUI.button(L"cancel").pressed) {
+      if (bpmGUI.button(L"cancel").pushed) {
         if (split % 3 == 0) {
           //isBpmClickedを反転
           edit24.isBpmClicked[bpmY * (24 / split)] = !edit24.isBpmClicked[bpmY * (24 / split)];
@@ -356,7 +356,7 @@ void Main(){
 
     }
     else if(importFlag) {
-      if (importGUI.button(L"ok").pressed) {
+      if (importGUI.button(L"ok").pushed) {
         String folderName = importGUI.textField(L"folderName").text;
         String fileName = importGUI.textField(L"fileName").text;
         import(folderName, fileName);
@@ -365,13 +365,13 @@ void Main(){
         importGUI.show(false);
       }
 
-      if (importGUI.button(L"cancel").pressed) {
+      if (importGUI.button(L"cancel").pushed) {
         importFlag = false;
         importGUI.show(false);
       }
     }
     else if (saveFlag) {
-      if (saveGUI.button(L"ok").pressed) {
+      if (saveGUI.button(L"ok").pushed) {
         String folderName = saveGUI.textField(L"folderName").text;
         String fileName = saveGUI.textField(L"fileName").text;
         saveFile(folderName, fileName);
@@ -380,7 +380,7 @@ void Main(){
         saveGUI.show(false);
       }
 
-      if (saveGUI.button(L"cancel").pressed) {
+      if (saveGUI.button(L"cancel").pushed) {
         saveFlag = false;
         saveGUI.show(false);
       }
