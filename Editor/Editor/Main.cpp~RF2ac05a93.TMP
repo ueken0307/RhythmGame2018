@@ -11,7 +11,7 @@ void drawEdit(int sX,int sY);
 void drawPlay(int sX, int sY);
 
 void import(String folderName,String fileName);
-void saveFile(String folderName,String fimeName);
+void save(String folderName,String fimeName);
 
 void genelateData(std::vector<BpmData> &bpms, std::vector<NoteData> &notes);
 
@@ -234,6 +234,9 @@ void Main(){
   bpmGUI.add(L"cancel", GUIButton::Create(L"キャンセル"));
   bpmGUI.setCenter(Point(Window::Width() / 2, Window::Height() / 2));
   bpmGUI.show(false);
+
+  import(L"Calamity", L"easy");
+  save(L"Calamity", L"test");
 
   while (System::Update()){
     if (longFlag) {
@@ -736,7 +739,7 @@ void import(String folderName,String fileName) {
   }
 }
 
-void saveFile(String folderName, String fileName) {
+void save(String folderName, String fileName) {
   FILE *fp;
   String path = L"Musics/" + folderName + L"/" + fileName + L".json";
   fopen_s(&fp,path.narrow().c_str(),"w");
@@ -746,6 +749,10 @@ void saveFile(String folderName, String fileName) {
     std::vector<BpmData> bpms;
     std::vector<NoteData> notes;
     genelateData(bpms, notes);
+
+    std::sort(bpms.begin(), bpms.end(), [](const BpmData &left, const BpmData &right) {return left.count <= right.count; });
+    std::sort(notes.begin(), notes.end(), [](const NoteData &left, const NoteData &right) {return left.count <= right.count; });
+
 
     fprintf_s(fp, "{\n");
     indent(1);
@@ -758,7 +765,7 @@ void saveFile(String folderName, String fileName) {
       indent(3);
       fprintf_s(fp, "\"bpm\":%lf,\n", bpms[i].bpm);
       indent(3);
-      fprintf_s(fp, "\"beat\":%d\n", bpms[i].beat);
+      fprintf_s(fp, "\"beat\":%d,\n", bpms[i].beat);
       indent(2);
       if (i != bpms.size() -1) {
         fprintf_s(fp, "},\n");
@@ -779,7 +786,7 @@ void saveFile(String folderName, String fileName) {
       indent(3);
       fprintf_s(fp, "\"lane\":%d,\n", notes[i].lane);
       indent(3);
-      fprintf_s(fp, "\"length\":%d\n", notes[i].length);
+      fprintf_s(fp, "\"length\":%d,\n", notes[i].length);
       indent(2);
       if (i != notes.size() - 1) {
         fprintf_s(fp, "},\n");
@@ -792,10 +799,7 @@ void saveFile(String folderName, String fileName) {
     fprintf_s(fp, "]\n");
     fprintf_s(fp, "}");
   }
-  else {
-    printf("Can not open\n");
-  }
-  fclose(fp);
+
 }
 
 void genelateData(std::vector<BpmData> &bpms,std::vector<NoteData> &notes) {
@@ -814,7 +818,4 @@ void genelateData(std::vector<BpmData> &bpms,std::vector<NoteData> &notes) {
       notes.push_back(NoteData(count,rm.BtoS(count),j.x,length));      
     }
   }
-
-  std::sort(bpms.begin(), bpms.end(), [](const BpmData &left, const BpmData &right) {return left.count < right.count; });
-  std::sort(notes.begin(), notes.end(), [](const NoteData &left, const NoteData &right) {return left.count < right.count; });
 }
