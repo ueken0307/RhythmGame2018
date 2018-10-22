@@ -24,6 +24,7 @@ void Main() {
   Window::Resize(672, 378);
   Graphics::SetBackground(Color(40));
   Graphics::SetVSyncEnabled(false);
+  System::SetExitEvent(WindowEvent::CloseButton);
   //----------
   SceneManager<String, ShareData> scene;
   scene.add<SimpleSelection>(L"SimpleSelection");

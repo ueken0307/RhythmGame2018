@@ -129,6 +129,7 @@ void Main(){
   Window::Resize(600, 650);
   Graphics::SetBackground(Color(40));
   Graphics::SetVSyncEnabled(false);
+  System::SetExitEvent(WindowEvent::CloseButton);
   //----------
 
   for (int i = 32-1; i >= 0; --i) {

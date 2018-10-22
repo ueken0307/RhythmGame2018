@@ -51,4 +51,7 @@
 
 // App Resource
 100		ICON	"Icon.ico"
-101		FILE	"Engine/Splash.png"
+//101		FILE	"Engine/Splash.png"
+
+//effect sound
+200     FILE    "button.mp3"

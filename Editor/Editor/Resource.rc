@@ -51,7 +51,7 @@
 
 // App Resource
 100		ICON	"Icon.ico"
-101		FILE	"Engine/Splash.png"
+//101		FILE	"Engine/Splash.png"
 
 //split
 110     FILE    "Pic/4.png"

@@ -46,7 +46,7 @@ void Game::init() {
   tapSound.setLoop(false);
   tapSound.setVolume(1.0);
 
-  tapSound = Sound(L"button.mp3");
+  tapSound = Sound(L"/200");
   tapSound.setLoop(false);
   tapSound.setVolume(1.0);
 
