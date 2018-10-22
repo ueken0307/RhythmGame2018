@@ -457,7 +457,7 @@ void update() {
             else {
               //ノーツ追加
               if (noteType == 0) {
-                cM.notes.push_back(EditNoteData(split, i / (24 / split), j, 0));
+                cM.notes.push_back(EditNoteData(split, i / (24 / split), j));
               }
               else if (noteType == 1) {
                 longSplit = split;
@@ -494,7 +494,7 @@ void update() {
             else {
               //ノーツ追加
               if (noteType == 0) {
-                cM.notes.push_back(EditNoteData(split, i / (32 / split), j, 0));
+                cM.notes.push_back(EditNoteData(split, i / (32 / split), j));
               }
               else if (noteType == 1) {
                 longSplit = split;
@@ -718,6 +718,16 @@ void generateIsClicked() {
       edit32.isClicked[i.y * (32 / i.split)][i.x] = true;
     }
   }
+
+  //bpmsから反映
+  for (const auto &i : measures[currentMeasure].bpms) {
+    if (i.split % 3 == 0) {
+      edit24.isBpmClicked[i.y * (24 / i.split)] = true;
+    }
+    else {
+      edit32.isBpmClicked[i.y * (32 / i.split)] = true;
+    }
+  }
 }
 
 void nextMeasure() {
@@ -878,16 +888,21 @@ void genelateData(std::vector<BpmData> &bpms,std::vector<NoteData> &notes) {
       bpms.push_back(BpmData(count,j.bpm,j.beat));
     }
   }
-  RhythmManager rm(bpms,0.0);
+  if (bpms.size()) {
+    RhythmManager rm(bpms, 0.0);
 
-  for (int i = 0; i < measures.size(); ++i) {
-    for (const auto &j : measures[i].notes) {
-      int count = i * 9600 + (9600 / j.split) * j.y;
-      int length = (9600 / j.longSplit) * j.length;
-      notes.push_back(NoteData(count,rm.BtoS(count),j.x,length));      
+    for (int i = 0; i < measures.size(); ++i) {
+      for (const auto &j : measures[i].notes) {
+        int count = i * 9600 + (9600 / j.split) * j.y;
+        int length = 0;
+        if (j.longSplit != 0 && j.length != 0) {
+          length = (9600 / j.longSplit) * j.length;
+        }
+        notes.push_back(NoteData(count, rm.BtoS(count), j.x, length));
+      }
     }
-  }
 
-  std::sort(bpms.begin(), bpms.end(), [](const BpmData &left, const BpmData &right) {return left.count < right.count; });
-  std::sort(notes.begin(), notes.end(), [](const NoteData &left, const NoteData &right) {return left.count < right.count; });
+    std::sort(bpms.begin(), bpms.end(), [](const BpmData &left, const BpmData &right) {return left.count < right.count; });
+    std::sort(notes.begin(), notes.end(), [](const NoteData &left, const NoteData &right) {return left.count < right.count; });
+  }
 }
