@@ -3,9 +3,7 @@
 #include <Windows.h>
 
 #include "ShareData.hpp"
-#include "MusicSelection.hpp"
 #include "Game.hpp"
-#include "Result.hpp"
 
 
 void Main() {
@@ -20,16 +18,14 @@ void Main() {
 #endif // _DEBUG
 
   //----------
-  Window::SetTitle(L"高専祭2018");
+  Window::SetTitle(L"高専祭2018 シンプルプレイヤー");
   ScalableWindow::Setup(1920, 1080);
   Window::Resize(672, 378);
   Graphics::SetBackground(Color(40));
   Graphics::SetVSyncEnabled(false);
   //----------
   SceneManager<String, ShareData> scene;
-  scene.add<MusicSelection>(L"MusicSelection");
   scene.add<Game>(L"Game");
-  scene.add<Result>(L"Result");
   //----------  
 
   while (s3d::System::Update()) {
