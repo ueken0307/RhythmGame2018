@@ -5,9 +5,11 @@ class ShareData {
 
 public:
   String folderName;
+  String fileName;
   String musicFileName;
-  int level;
   double offset;
+
+  String nextScene;
 };
 
 #endif //SHARE_DATA_HPP

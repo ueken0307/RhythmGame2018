@@ -58,11 +58,14 @@ void MusicSelection::init() {
 void MusicSelection::update() {
   if (infos.size()) {
     if (Input::KeyEnter.clicked && infos[selectMusic].getPlayLevels()[selectLevel] != 0) {
+      String levelStr[] = { L"easy",L"normal",L"hard" };
+
       printf("Next scene is Game\n");
       m_data->folderName = infos[selectMusic].getFolderName();
+      m_data->fileName = levelStr[selectLevel];
       m_data->musicFileName = infos[selectMusic].getMusicFileName();
-      m_data->level = selectLevel;
       m_data->offset = infos[selectMusic].getOffset();
+      m_data->nextScene = L"Result";
       changeScene(L"Game");
     }
 

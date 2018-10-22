@@ -8,14 +8,12 @@ void Game::init() {
   //test
   speed = 16;
 
-  String levelStr[] = { L"easy",L"normal",L"hard" };
-
   std::vector<BpmData> bpms;
 
   printf("selected -> %ls\n",m_data->folderName.c_str());
-  printf("selected -> %d\n", m_data->level);
+  printf("selected -> %ls\n", m_data->fileName.c_str());
 
-  JSONReader reader(L"Musics/" + m_data->folderName + L"/" + levelStr[m_data->level] + L".json");
+  JSONReader reader(L"Musics/" + m_data->folderName + L"/" + m_data->fileName + L".json");
 
   printf("---------bpm---------\n");
   for (const auto &i : reader[L"bpms"].getArray()) {
@@ -58,8 +56,9 @@ void Game::init() {
 
 void Game::update() {
   if (Input::KeyEnter.clicked) {
-    printf("Next scene is Result\n");
-    changeScene(L"Result");
+    String tmp = L"Next scene is" + m_data->nextScene + L"\n";
+    printf(tmp.narrow().c_str());
+    changeScene(m_data->nextScene);
   }
 
   if (!startFlag && Input::KeySpace.clicked) {
