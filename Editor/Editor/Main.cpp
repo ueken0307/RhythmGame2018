@@ -10,6 +10,8 @@ void draw();
 void drawEdit(int sX,int sY);
 void drawPlay(int sX, int sY);
 
+void import(String folderName,int diff);
+
 void generateIsClicked();
 void nextMeasure();
 void prevMeasure();
@@ -554,7 +556,7 @@ void drawEdit(int sX, int sY) {
             }
             else {
               //始点が現在の小節なら
-              Rect(laneStartXs[cN.x], startY, laneWidths[cN.x], ((startBmsCount + longBmsCount - currentMeasure * 9600 - startBmsCount) / 9600.0) * 576).draw(ColorF(0, 0, 255, 0.5));
+              Rect(laneStartXs[cN.x], startY, laneWidths[cN.x], (longBmsCount / 9600.0) * 576).draw(ColorF(0, 0, 255, 0.5));
             }
 
 
@@ -668,4 +670,66 @@ void jumpMeasure(int measure) {
   }
   //notesからisClickedに反映
   generateIsClicked();
+}
+
+void import(String folderName,int diff) {
+  currentMeasure = 0;
+
+  String diffStr[] = { L"easy",L"noamal" ,L"hard"};
+  JSONReader reader(L"Musics/" + folderName + L"/" + diffStr[diff] + L".json");
+  if (reader.isOpened()) {
+    printf("---------bpm---------\n");
+    for (const auto &i : reader[L"bpms"].getArray()) {
+      int time = i[L"time"].get<int32>();
+
+      if (measures.size() < (time / 9600) + 1) {
+        measures.resize((time / 9600) + 1);
+      }
+
+      if ((time % 9600) % (9600/24) == 0) {
+        measures[time  / 9600].bpms.push_back(
+          EditBpmData(24, (time % 9600) / (9600 / 24), i[L"bpm"].get<double>(), i[L"beat"].get<int32>()));
+        printf("24,%d,%lf,%d\n", (time % 9600) / (9600 / 24), i[L"bpm"].get<double>(), i[L"beat"].get<int32>());
+      } else {
+        measures[time / 9600].bpms.push_back(
+          EditBpmData(32, (time % 9600) / (9600 / 32), i[L"bpm"].get<double>(), i[L"beat"].get<int32>()));
+        printf("32,%d,%lf,%d\n", (time % 9600) / (9600 / 32), i[L"bpm"].get<double>(), i[L"beat"].get<int32>());
+      } 
+    }
+    printf("---------note--------\n");
+    for (const auto &i : reader[L"notes"].getArray()) {
+      int time = i[L"time"].get<int32>();
+      int length = i[L"length"].get<int32>();
+      int lane = i[L"lane"].get<int32>();
+
+      if (measures.size() < (time / 9600) + 1) {
+        measures.resize((time / 9600) + 1);
+      }
+
+      if ((time % 9600) % (9600 / 24) == 0 && (time % 9600) % (9600 / 32) != 0) {
+        if (length % (9600 / 24) == 0 && length % (9600 / 32) != 0) {
+          measures[time / 9600].notes.push_back(
+            EditNoteData(24, (time % 9600) / (9600 / 24), lane, 24, length / (9600 / 24)));
+          printf("24,%d,(%d),%d,%d\n", (time % 9600) / (9600 / 24), lane, 24, length / (9600 / 24));
+        } else {
+          measures[time / 9600].notes.push_back(
+            EditNoteData(24, (time % 9600) / (9600 / 24), lane, 32, length / (9600 / 32)));
+          printf("24,%d,(%d),%d,%d\n", (time % 9600) / (9600 / 24), lane, 32, length / (9600 / 32));
+        }        
+      }
+      else {
+        if (length % (9600 / 24) == 0 && length % (9600 / 32) != 0) {
+          measures[time / 9600].notes.push_back(
+            EditNoteData(32, (time % 9600) / (9600 / 32), lane, 24, length / (9600 / 24)));
+          printf("32,%d,(%d),%d,%d\n", (time % 9600) / (9600 / 32), lane, 24, length / (9600 / 24));
+        }
+        else {
+          measures[time / 9600].notes.push_back(
+            EditNoteData(32, (time % 9600) / (9600 / 32), lane, 32, length / (9600 / 32)));
+          printf("32,%d,(%d),%d,%d\n", (time % 9600) / (9600 / 32), lane, 32, length / (9600 / 32));
+        }
+      }
+    }
+    generateIsClicked();
+  }
 }
