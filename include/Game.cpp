@@ -56,8 +56,9 @@ void Game::init() {
 
 void Game::update() {
   if (Input::KeyEnter.clicked) {
-    printf("Next scene is Result\n");
-    changeScene(L"Result");
+    String tmp = L"Next scene is" + m_data->nextScene + L"\n";
+    printf(tmp.narrow().c_str());
+    changeScene(m_data->nextScene);
   }
 
   if (!startFlag && Input::KeySpace.clicked) {

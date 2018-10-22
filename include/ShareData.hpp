@@ -8,6 +8,8 @@ public:
   String fileName;
   String musicFileName;
   double offset;
+
+  String nextScene;
 };
 
 #endif //SHARE_DATA_HPP
