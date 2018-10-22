@@ -5,10 +5,8 @@
 #include"NoteData.hpp"
 
 void update();
-void play();
 void draw();
 void drawEdit(int sX,int sY);
-void drawPlay(int sX, int sY);
 
 void import(String folderName,String fileName);
 void saveFile(String folderName,String fimeName);
@@ -126,7 +124,7 @@ void Main(){
 
   //----------
   Window::SetTitle(L"高専祭2018 譜面作成");
-  Window::Resize(1200, 700);
+  Window::Resize(600, 650);
   Graphics::SetBackground(Color(40));
   Graphics::SetVSyncEnabled(false);
   //----------
@@ -569,13 +567,8 @@ void update() {
   }
 }
 
-void play() {
-
-}
-
 void draw() {
   drawEdit(editStartX,editStartY);
-  drawPlay(0,0);
 }
 
 void drawEdit(int sX, int sY) {
@@ -694,10 +687,6 @@ void drawEdit(int sX, int sY) {
       Line(sX, sY + i*editNoteHeight32, sX + editWidth, sY + i*editNoteHeight32).draw();
     }
   }
-}
-
-void drawPlay(int sX, int sY) {
-
 }
 
 void generateIsClicked() {
