@@ -671,8 +671,21 @@ void drawEdit(int sX, int sY) {
     }
   }
 
+  //vertical line
+  if (split % 3 == 0) {
+    for (int i = 0; i < 24; i += (24 / split)) {
+      Color color = i % (24 / 3) == 0 ? Color(255, 0, 0) : Color(255);
+      Line(sX, sY + i*editNoteHeight24, sX + editWidth, sY + i*editNoteHeight24).draw(color);
+    }
+  } else {
+    for (int i = 0; i < 32; i += (32 / split)) {
+      Color color = i % (32 / 4) == 0 ? Color(255, 0, 0) : Color(255);
+      Line(sX, sY + i*editNoteHeight32, sX + editWidth, sY + i*editNoteHeight32).draw(color);
+    }
+  }
+
   //topLine
-  //Line(sX, sY,sX + editWidth,sY).draw();
+  Line(sX, sY,sX + editWidth,sY).draw();
   //bottomLine
   Line(sX, sY + editHeight, sX + editWidth, sY + editHeight).draw();
   //leftLine
@@ -684,15 +697,6 @@ void drawEdit(int sX, int sY) {
     Line(sX + pedalWidth + i * buttonWidth, sY, sX + pedalWidth + i * buttonWidth, sY + editHeight).draw();
   }
 
-  if (split % 3 == 0) {
-    for (int i = 0; i < 24; i += (24 / split)) {
-      Line(sX, sY + i*editNoteHeight24, sX + editWidth, sY + i*editNoteHeight24).draw();
-    }
-  } else {
-    for (int i = 0; i < 32; i += (32 / split)) {
-      Line(sX, sY + i*editNoteHeight32, sX + editWidth, sY + i*editNoteHeight32).draw();
-    }
-  }
 }
 
 void generateIsClicked() {
