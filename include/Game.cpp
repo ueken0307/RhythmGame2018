@@ -75,8 +75,8 @@ void Game::update() {
     }
 
     rhythmManager.update();
-    printf("second:%lf\n", rhythmManager.getSecond());
-    printf("Bcount:%8d\n", rhythmManager.getBmsCount());
+    //printf("second:%lf\n", rhythmManager.getSecond());
+    //printf("Bcount:%8d\n", rhythmManager.getBmsCount());
   }
 
   for (auto &i : notes) {
