@@ -128,7 +128,6 @@ void Main(){
   Window::SetTitle(L"高専祭2018 譜面作成");
   Window::Resize(600, 650);
   Graphics::SetBackground(Color(40));
-  Graphics::SetVSyncEnabled(false);
   System::SetExitEvent(WindowEvent::CloseButton);
   //----------
 

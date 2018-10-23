@@ -23,7 +23,6 @@ void Main() {
   ScalableWindow::Setup(1920, 1080);
   Window::Resize(672, 378);
   Graphics::SetBackground(Color(40));
-  Graphics::SetVSyncEnabled(false);
   System::SetExitEvent(WindowEvent::CloseButton);
   //----------
   SceneManager<String, ShareData> scene;
