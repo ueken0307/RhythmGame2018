@@ -34,6 +34,8 @@ private:
   int pedalHoldWidth;
   int buttonHoldWidth;
 
+  double offsetSec;
+  double beforeSec;
   Sound music,tapSound;
 };
 

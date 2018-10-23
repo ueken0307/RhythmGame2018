@@ -8,6 +8,9 @@ void Game::init() {
   //test
   speed = 16;
 
+  beforeSec = 1.0;
+  offsetSec = m_data->offset;
+
   std::vector<BpmData> bpms;
 
   printf("selected -> %ls\n",m_data->folderName.c_str());
@@ -21,7 +24,7 @@ void Game::init() {
     printf("time:%8d  bpm:%lf\n", i[L"time"].get<int32>(), i[L"bpm"].get<double>());
   }
 
-  rhythmManager = RhythmManager(bpms, m_data->offset);
+  rhythmManager = RhythmManager(bpms, m_data->offset + beforeSec);
 
   printf("---------note--------\n");
   for (const auto &i : reader[L"notes"].getArray()) {
@@ -43,8 +46,8 @@ void Game::init() {
   buttonHoldWidth = 50;
 
   music = Sound(L"Musics/" + m_data->folderName + L"/" + m_data->musicFileName);
-  tapSound.setLoop(false);
-  tapSound.setVolume(1.0);
+  music.setLoop(false);
+  music.setVolume(0.5);
 
   tapSound = Sound(L"/200");
   tapSound.setLoop(false);
@@ -63,11 +66,14 @@ void Game::update() {
 
   if (!startFlag && Input::KeySpace.clicked) {
     startFlag = true;
-    music.play();
     rhythmManager.start();
   }
 
   if (startFlag) {
+    if (rhythmManager.getSecond() + offsetSec > 0.0) {
+      music.play();
+    }
+
     rhythmManager.update();
     printf("second:%lf\n", rhythmManager.getSecond());
     printf("Bcount:%8d\n", rhythmManager.getBmsCount());
