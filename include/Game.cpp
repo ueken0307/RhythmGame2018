@@ -32,6 +32,8 @@ void Game::init() {
     printf("time:%8d  lane:%3d  length:%8d second:%lf\n", i[L"time"].get<int32>(), i[L"lane"].get<int32>(), i[L"length"].get<int32>(), rhythmManager.BtoS(i[L"time"].get<int32>()));
   }
 
+  startSec = rhythmManager.BtoS(9600 * m_data->startMeasure);
+
   startFlag = false;
 
   wWidth = Window::BaseWidth();

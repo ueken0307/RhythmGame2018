@@ -36,6 +36,7 @@ private:
 
   double offsetSec;
   double beforeSec;
+  double startSec;
   Sound music,tapSound;
 };
 
