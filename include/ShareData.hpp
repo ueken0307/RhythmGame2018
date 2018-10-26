@@ -8,6 +8,7 @@ public:
   String fileName;
   String musicFileName;
   double offset;
+  int startMeasure;
 
   String nextScene;
 };

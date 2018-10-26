@@ -28,10 +28,10 @@ void TimeManager::update() {
   nowTime = getTime();
 }
 
-double TimeManager::nowSecond(double offsetSecond = 0.0) const {
-  return diff(startTime, nowTime) * pow(10.0,-6.0) - offsetSecond;
+double TimeManager::nowSecond(double offsetSecond) const {
+  return diff(startTime, nowTime) * pow(10.0,-6.0) + offsetSecond;
 }
 
-int TimeManager::nowMicroSecond(int offsetMicroSeconds = 0) const {
-  return diff(startTime, nowTime) - offsetMicroSeconds;
+int TimeManager::nowMicroSecond(int offsetMicroSecond) const {
+  return diff(startTime, nowTime) + offsetMicroSecond;
 }

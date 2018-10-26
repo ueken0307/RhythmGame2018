@@ -65,6 +65,7 @@ void MusicSelection::update() {
       m_data->fileName = levelStr[selectLevel];
       m_data->musicFileName = infos[selectMusic].getMusicFileName();
       m_data->offset = infos[selectMusic].getOffset();
+      m_data->startMeasure = 0;
       m_data->nextScene = L"Result";
       changeScene(L"Game");
     }

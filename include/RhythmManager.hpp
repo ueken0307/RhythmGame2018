@@ -17,18 +17,20 @@ public:
 class RhythmManager {
 public:
   RhythmManager() {};
-  RhythmManager(std::vector<BpmData> &bpmDatas, double offset);
+  RhythmManager(std::vector<BpmData> &bpmDatas, double offsetSecond = 0.0, int startMeasure = 0);
   void start();
   void update();
+  double getStartSecond() const { return startSecond; };
   int getBmsCount() const { return bmsCount; };
-  double getSecond() const { return timer.nowSecond(offset); }
+  double getSecond() const { return timer.nowSecond(offsetSecond); }
   double BtoS(int count) const;
 
 private:
   std::vector<BpmData> bpmDatas;
   std::vector<double> changeTimes;
   TimeManager timer;
-  double offset;
+  double offsetSecond;
+  double startSecond;
   int bmsCount;
 };
 

@@ -7,7 +7,7 @@ BpmData::BpmData(int count, double bpm,int beat) {
   this->beat = beat;
 }
 
-RhythmManager::RhythmManager(std::vector<BpmData> &bpmDatas,double offset = 0.0){
+RhythmManager::RhythmManager(std::vector<BpmData> &bpmDatas,double offsetSecond,int startMeasure){
 
   //BPM•Ï‰»•b‚ÌŽæ“¾
   this->bpmDatas.push_back(BpmData(bpmDatas[0].count, bpmDatas[0].bpm, bpmDatas[0].beat));
@@ -18,8 +18,9 @@ RhythmManager::RhythmManager(std::vector<BpmData> &bpmDatas,double offset = 0.0)
     this->changeTimes.push_back((60.0 / bpmDatas[i-1].bpm)*((bpmDatas[i].count - bpmDatas[i-1].count) / (9600.0/bpmDatas[i-1].beat)) + changeTimes[i-1]);
   }
 
-  this->offset = offset;
-  bmsCount = (timer.nowSecond(offset) * (this->bpmDatas[0].bpm / 60.0) * (9600.0 / this->bpmDatas[0].beat));
+  startSecond = BtoS(9600 * startMeasure);
+  this->offsetSecond = offsetSecond + startSecond;
+  bmsCount = (timer.nowSecond(offsetSecond) * (this->bpmDatas[0].bpm / 60.0) * (9600.0 / this->bpmDatas[0].beat));
 }
 
 double RhythmManager::BtoS(int count) const {
@@ -44,12 +45,12 @@ void RhythmManager::update() {
 
   int tmp = 0;
   for (int i = 0; i < changeTimes.size(); ++i) {
-    if (changeTimes[i] <= timer.nowSecond(offset)) {
+    if (changeTimes[i] <= timer.nowSecond(offsetSecond)) {
       tmp = i;
     } else {
       break;
     }
   }
 
-  bmsCount = bpmDatas[tmp].count + ((timer.nowSecond(offset) - changeTimes[tmp]) * (bpmDatas[tmp].bpm / 60.0) * (9600.0 / bpmDatas[tmp].beat));
+  bmsCount = bpmDatas[tmp].count + ((timer.nowSecond(offsetSecond) - changeTimes[tmp]) * (bpmDatas[tmp].bpm / 60.0) * (9600.0 / bpmDatas[tmp].beat));
 }
