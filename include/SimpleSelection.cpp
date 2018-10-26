@@ -15,7 +15,7 @@ void SimpleSelection::init(){
 
   gui.textField(L"folderName").setText(m_data->folderName);
   gui.textField(L"fileName").setText(m_data->fileName);
-  gui.textField(L"measure").setText(m_data->startMeasure!=0 ? ToString(m_data->startMeasure) : L"0");
+  gui.textField(L"measure").setText(m_data->startMeasure>=1 ? ToString(m_data->startMeasure + 1) : L"1");
 }
 
 void SimpleSelection::update(){
@@ -32,7 +32,7 @@ void SimpleSelection::update(){
       m_data->offset = reader[L"offset"].get<double>();
       m_data->musicFileName = reader[L"musicFileName"].get<String>();
       m_data->nextScene = L"SimpleSelection";
-      m_data->startMeasure = (Parse<int>(gui.textField(L"measure").text) > 0) ? Parse<int>(gui.textField(L"measure").text) : 0;
+      m_data->startMeasure = (Parse<int>(gui.textField(L"measure").text) >= 1) ? Parse<int>(gui.textField(L"measure").text)-1 : 0;
 
       changeScene(L"Game");
     }

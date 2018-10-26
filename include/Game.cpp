@@ -3,12 +3,12 @@
 void Game::init() {
   for (int i = 20; i > 0; --i) {
     speedSec.push_back(0.3*i);
-    printf("%lf\n", speedSec[speedSec.size() - 1]);
+    //printf("%lf\n", speedSec[speedSec.size() - 1]);
   }
   //test
   speed = 16;
 
-  beforeSec = 1.0;
+  beforeSec = (m_data->startMeasure == 0) ? 1.0 : 0.0;
   offsetSec = m_data->offset;
 
   std::vector<BpmData> bpms;
@@ -18,21 +18,21 @@ void Game::init() {
 
   JSONReader reader(L"Musics/" + m_data->folderName + L"/" + m_data->fileName + L".json");
 
-  printf("---------bpm---------\n");
+  //printf("---------bpm---------\n");
   for (const auto &i : reader[L"bpms"].getArray()) {
     bpms.push_back(BpmData(i[L"time"].get<int32>(), i[L"bpm"].get<double>(), i[L"beat"].get<int32>()));
-    printf("time:%8d  bpm:%lf\n", i[L"time"].get<int32>(), i[L"bpm"].get<double>());
+    //printf("time:%8d  bpm:%lf\n", i[L"time"].get<int32>(), i[L"bpm"].get<double>());
   }
 
-  rhythmManager = RhythmManager(bpms, m_data->offset + beforeSec);
+  rhythmManager = RhythmManager(bpms, -offsetSec -beforeSec,m_data->startMeasure);
 
-  printf("---------note--------\n");
+  //printf("---------note--------\n");
   for (const auto &i : reader[L"notes"].getArray()) {
     notes.push_back(NoteData(i[L"time"].get<int32>(),rhythmManager.BtoS(i[L"time"].get<int32>()), i[L"lane"].get<int32>(), i[L"length"].get<int32>()));
-    printf("time:%8d  lane:%3d  length:%8d second:%lf\n", i[L"time"].get<int32>(), i[L"lane"].get<int32>(), i[L"length"].get<int32>(), rhythmManager.BtoS(i[L"time"].get<int32>()));
+    //printf("time:%8d  lane:%3d  length:%8d second:%lf\n", i[L"time"].get<int32>(), i[L"lane"].get<int32>(), i[L"length"].get<int32>(), rhythmManager.BtoS(i[L"time"].get<int32>()));
   }
 
-  startSec = rhythmManager.BtoS(9600 * m_data->startMeasure);
+  startSec = rhythmManager.getStartSecond();
 
   startFlag = false;
 
@@ -50,6 +50,7 @@ void Game::init() {
   music = Sound(L"Musics/" + m_data->folderName + L"/" + m_data->musicFileName);
   music.setLoop(false);
   music.setVolume(0.5);
+  music.setPosSec(startSec);
 
   tapSound = Sound(L"/200");
   tapSound.setLoop(false);
@@ -72,7 +73,7 @@ void Game::update() {
   }
 
   if (startFlag) {
-    if (rhythmManager.getSecond() + offsetSec > 0.0) {
+    if (rhythmManager.getSecond() + offsetSec - startSec > 0.0) {
       music.play();
     }
 

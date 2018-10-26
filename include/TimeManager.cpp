@@ -29,9 +29,9 @@ void TimeManager::update() {
 }
 
 double TimeManager::nowSecond(double offsetSecond) const {
-  return diff(startTime, nowTime) * pow(10.0,-6.0) - offsetSecond;
+  return diff(startTime, nowTime) * pow(10.0,-6.0) + offsetSecond;
 }
 
 int TimeManager::nowMicroSecond(int offsetMicroSecond) const {
-  return diff(startTime, nowTime) - offsetMicroSecond;
+  return diff(startTime, nowTime) + offsetMicroSecond;
 }
