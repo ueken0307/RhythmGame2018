@@ -23,10 +23,9 @@ int outputInfo(String folderName,String title,String artist,String bpm,String mu
 
 void Main(){
   Window::Resize(750, 400);
+  System::SetExitEvent(WindowEvent::CloseButton);
 
   String folderName;
-  double offset = 0.0;
-  std::array<int, 3> playLevels = { 0 };
 
   GUI openGUI, alertGUI, editGUI;
 
