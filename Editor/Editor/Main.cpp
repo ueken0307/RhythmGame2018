@@ -713,6 +713,14 @@ void generateIsClicked() {
     }
   }
 
+  for (auto &i : edit24.isBpmClicked) {
+    i = false;
+  }
+
+  for (auto &i : edit32.isBpmClicked) {
+    i = false;
+  }
+
   //notesから反映
   for (const auto &i : measures[currentMeasure].notes) {
     if (i.split % 3 == 0) {
@@ -766,6 +774,8 @@ void import(String folderName,String fileName) {
 
   JSONReader reader(L"Musics/" + folderName + L"/" + fileName + L".json");
   if (reader.isOpened()) {
+    measures.clear();
+
     printf("---------bpm---------\n");
     for (const auto &i : reader[L"bpms"].getArray()) {
       int time = i[L"time"].get<int32>();
