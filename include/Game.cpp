@@ -6,7 +6,7 @@ void Game::init() {
     //printf("%lf\n", speedSec[speedSec.size() - 1]);
   }
   //test
-  speed = 16;
+  speed = 18;
 
   beforeSec = (m_data->startMeasure == 0) ? 1.0 : 0.0;
   offsetSec = m_data->offset;
@@ -47,6 +47,11 @@ void Game::init() {
   pedalHoldWidth = 100;
   buttonHoldWidth = 50;
 
+  judgeDurations.push_back((1.0 / 60.0) * 2.0);
+  judgeStrs.push_back(L"Perfect");
+  judgeDurations.push_back((1.0 / 60.0) * 4.0);
+  judgeStrs.push_back(L"Good");
+
   music = Sound(L"Musics/" + m_data->folderName + L"/" + m_data->musicFileName);
   music.setLoop(false);
   music.setVolume(0.5);
@@ -78,6 +83,8 @@ void Game::update() {
     }
 
     rhythmManager.update();
+
+    judge();
     //printf("second:%lf\n", rhythmManager.getSecond());
     //printf("Bcount:%8d\n", rhythmManager.getBmsCount());
   }
@@ -98,10 +105,47 @@ void Game::update() {
 
 void Game::judge() {
 
+  std::array<bool, 6> clickeds = { Input::KeyA.clicked, Input::KeyS.clicked ,Input::KeyD.clicked ,Input::KeyK.clicked ,Input::KeyL.clicked , Input::KeySemicolon.clicked };
+
+  for (int i = 0; i < clickeds.size(); ++i) {
+    if (clickeds[i]) {
+      for (int j = 0; j < notes.size(); ++j) {
+
+        if (!notes[j].isEndEffect && notes[j].lane == i) {
+          int result = checkJudge(notes[j]);
+
+          if (result != -1) {
+            printf("%s\n", judgeStrs[result].narrow().c_str());
+            notes[j].isEndEffect = true;
+            tapSound.stop();
+            tapSound.play();
+          }
+          
+          break;
+        }
+      }
+    }
+  }
+
+  //通り過ぎて一番ゆるい判定範囲超えてるノーツをミスにする
+  for (auto &i:notes) {
+    if (!i.isEndEffect && i.second - rhythmManager.getSecond() < - judgeDurations[judgeDurations.size() - 1]) {
+      printf("Miss\n");
+      i.isEndEffect = true;
+    }
+  }
 }
 
 int Game::checkJudge(NoteData &note){
+  double duration = fabs(rhythmManager.getSecond() - note.second);
 
+  for (int i = 0; i < judgeDurations.size(); ++i) {
+    if (duration <= judgeDurations[i]) {
+      return i;
+    }
+  }
+
+  return -1;
 }
 
 void Game::draw() const {
@@ -134,6 +178,11 @@ void Game::drawNotes() const{
     //まだ表示エリアに入っていないノーツは表示しない
     if (y < -noteHeight) {
       break;
+    }
+
+    //判定の終わってるノーツは表示しない
+    if (i.isEndEffect) {
+      continue;
     }
 
     //ノーツ描画

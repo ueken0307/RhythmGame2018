@@ -40,6 +40,9 @@ private:
   double beforeSec;
   double startSec;
   Sound music,tapSound;
+
+  std::vector<double> judgeDurations;
+  std::vector<String> judgeStrs;
 };
 
 #endif // GAME_HPP
