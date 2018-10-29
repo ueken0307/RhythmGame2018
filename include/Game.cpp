@@ -1,5 +1,21 @@
 #include "Game.hpp"
 
+struct  JudgeEffect :IEffect {
+  double time;
+  String str;
+  Font f20;
+  Color color;
+
+  JudgeEffect(String str,Color color) :f20(20), time(0.2),str(str),color(color) {}
+
+
+  bool update(double t)override {
+    f20(str).drawCenter({ Window::BaseWidth() / 2, Window::BaseHeight()/2 - t * 200 },color);
+
+    return t < time;
+  }
+};
+
 void Game::init() {
   for (int i = 20; i > 0; --i) {
     speedSec.push_back(0.3*i);
@@ -119,6 +135,8 @@ void Game::judge() {
             notes[j].isEndEffect = true;
             tapSound.stop();
             tapSound.play();
+
+            effect.add<JudgeEffect>(judgeStrs[result] +  L"(" + ToString(notes[j].second - rhythmManager.getSecond()) + L")",(result == 0)? Color(255,0,0):Color(0,255,0));
           }
           
           break;
@@ -132,6 +150,8 @@ void Game::judge() {
     if (!i.isEndEffect && i.second - rhythmManager.getSecond() < - judgeDurations[judgeDurations.size() - 1]) {
       printf("Miss\n");
       i.isEndEffect = true;
+
+      effect.add<JudgeEffect>(L"Miss", Color(0, 0, 255));
     }
   }
 }
@@ -164,7 +184,7 @@ void Game::draw() const {
   //judgeLine
   Line(sideWidth, judgeLineY, wWidth - sideWidth, judgeLineY).draw();
   
-  
+  effect.update();
 }
 
 void Game::drawNotes() const{

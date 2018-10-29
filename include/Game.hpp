@@ -43,6 +43,8 @@ private:
 
   std::vector<double> judgeDurations;
   std::vector<String> judgeStrs;
+
+  Effect effect;
 };
 
 #endif // GAME_HPP
