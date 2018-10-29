@@ -49,7 +49,7 @@ void Game::init() {
 
   judgeDurations.push_back((1.0 / 60.0) * 2.0);
   judgeStrs.push_back(L"Perfect");
-  judgeDurations.push_back((1.0 / 60.0) * 4.0);
+  judgeDurations.push_back((1.0 / 60.0) * 5.0);
   judgeStrs.push_back(L"Good");
 
   music = Sound(L"Musics/" + m_data->folderName + L"/" + m_data->musicFileName);
@@ -115,7 +115,7 @@ void Game::judge() {
           int result = checkJudge(notes[j]);
 
           if (result != -1) {
-            printf("%s\n", judgeStrs[result].narrow().c_str());
+            printf("%s %lf\n", judgeStrs[result].narrow().c_str(), notes[j].second - rhythmManager.getSecond());
             notes[j].isEndEffect = true;
             tapSound.stop();
             tapSound.play();
