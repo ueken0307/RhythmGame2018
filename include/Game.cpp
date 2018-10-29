@@ -100,7 +100,7 @@ void Game::judge() {
 
 }
 
-void Game::checkJudge(NoteData &note){
+int Game::checkJudge(NoteData &note){
 
 }
 
