@@ -82,13 +82,17 @@ void Game::update() {
     //printf("Bcount:%8d\n", rhythmManager.getBmsCount());
   }
 
-  for (auto &i : notes) {
-    if (!i.isEndEffect && i.second <= rhythmManager.getSecond()) {
-      i.isEndEffect = true;
-      tapSound.stop();
-      tapSound.play();
+  //Ž©“®Ä¶‚Ì‚Æ‚«
+  if (m_data->autoFlag) {
+    for (auto &i : notes) {
+      if (!i.isEndEffect && i.second <= rhythmManager.getSecond()) {
+        i.isEndEffect = true;
+        tapSound.stop();
+        tapSound.play();
+      }
     }
   }
+  
   
 }
 

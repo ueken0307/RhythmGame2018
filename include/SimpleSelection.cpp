@@ -31,6 +31,7 @@ void SimpleSelection::update(){
       m_data->fileName = fileName;
       m_data->offset = reader[L"offset"].get<double>();
       m_data->musicFileName = reader[L"musicFileName"].get<String>();
+      m_data->autoFlag = true;
       m_data->nextScene = L"SimpleSelection";
       m_data->startMeasure = (Parse<int>(gui.textField(L"measure").text) >= 1) ? Parse<int>(gui.textField(L"measure").text)-1 : 0;
 

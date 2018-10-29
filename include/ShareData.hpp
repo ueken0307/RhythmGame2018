@@ -10,6 +10,8 @@ public:
   double offset;
   int startMeasure;
 
+  bool autoFlag;
+
   String nextScene;
 };
 
