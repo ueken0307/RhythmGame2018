@@ -72,7 +72,7 @@ void Game::update() {
     changeScene(m_data->nextScene);
   }
 
-  if (!startFlag && Input::KeySpace.clicked) {
+  if (!startFlag && (Input::KeySpace.clicked || Input::KeyS.clicked || Input::KeyD.clicked || Input::KeyK.clicked || Input::KeyL.clicked)) {
     startFlag = true;
     rhythmManager.start();
   }
