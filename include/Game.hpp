@@ -16,6 +16,8 @@ public:
   void drawFadeIn(double t) const override;
   void drawFadeOut(double t) const override;
 
+  void judge();
+  void checkJudge(NoteData &note);
   void drawNotes() const;
 private:
   RhythmManager rhythmManager;

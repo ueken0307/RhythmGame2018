@@ -96,6 +96,14 @@ void Game::update() {
   
 }
 
+void Game::judge() {
+
+}
+
+void Game::checkJudge(NoteData &note){
+
+}
+
 void Game::draw() const {
 
   drawNotes();
