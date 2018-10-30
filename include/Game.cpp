@@ -63,7 +63,7 @@ void Game::init() {
   pedalHoldWidth = 100;
   buttonHoldWidth = 50;
 
-  judgeDurations.push_back((1.0 / 60.0) * 2.0);
+  judgeDurations.push_back((1.0 / 60.0) * 3.0);
   judgeStrs.push_back(L"Perfect");
   judgeDurations.push_back((1.0 / 60.0) * 5.0);
   judgeStrs.push_back(L"Good");
