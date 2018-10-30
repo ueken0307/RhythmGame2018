@@ -122,17 +122,26 @@ void Game::update() {
 void Game::judge() {
 
   std::array<bool, 6> clickeds = { Input::KeyA.clicked, Input::KeyS.clicked ,Input::KeyD.clicked ,Input::KeyK.clicked ,Input::KeyL.clicked , Input::KeySemicolon.clicked };
+  std::array<bool, 6> presseds = { Input::KeyA.pressed, Input::KeyS.pressed ,Input::KeyD.pressed ,Input::KeyK.pressed ,Input::KeyL.pressed , Input::KeySemicolon.pressed };
 
+  
+  //始点の処理
   for (int i = 0; i < clickeds.size(); ++i) {
     if (clickeds[i]) {
       for (int j = 0; j < notes.size(); ++j) {
 
-        if (!notes[j].isEndEffect && notes[j].lane == i) {
+        if (!notes[j].isEndEffect && !notes[j].isLongFlag && notes[j].lane == i) {
           int result = checkJudge(notes[j]);
 
           if (result != -1) {
             printf("%s %lf\n", judgeStrs[result].narrow().c_str(), notes[j].second - rhythmManager.getSecond());
-            notes[j].isEndEffect = true;
+            //長押しノーツなら、isLongFlagをオンにし、通常ノーツではisEndEffectをオンにする
+            if (notes[j].length != 0) {
+              notes[j].isLongFlag = true;
+            }
+            else {
+              notes[j].isEndEffect = true;
+            }
             tapSound.stop();
             tapSound.play();
 
@@ -144,6 +153,23 @@ void Game::judge() {
       }
     }
   }
+
+  //長押しノーツ処理
+  for (int i = 0; i < notes.size(); ++i) {
+    //判定が終わって無くて長押し状態のノーツ
+    if (!notes[i].isEndEffect && notes[i].isLongFlag) {
+      if (presseds[notes[i].lane]) {
+
+      }
+      else {
+
+      }
+
+
+    }
+
+  }
+  
 
   //通り過ぎて一番ゆるい判定範囲超えてるノーツをミスにする
   for (auto &i:notes) {
