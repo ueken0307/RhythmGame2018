@@ -10,6 +10,7 @@ public:
   double offset;
   int startMeasure;
   double judgeOffset;
+  int speed;
 
   bool autoFlag;
 

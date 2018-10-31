@@ -18,11 +18,11 @@ struct  JudgeEffect :IEffect {
 
 void Game::init() {
   for (int i = 20; i > 0; --i) {
-    speedSec.push_back(0.3*i);
+    speedSec.push_back(i*0.1);
     //printf("%lf\n", speedSec[speedSec.size() - 1]);
   }
   //test
-  speed = 18;
+  speed = m_data->speed;
 
   beforeSec = (m_data->startMeasure == 0) ? 1.0 : 0.0;
   offsetSec = m_data->offset;
