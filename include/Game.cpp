@@ -171,8 +171,6 @@ void Game::judge() {
           notes[i].isEndLong = true;
           printf("%s (Hold)\n", judgeStrs[0].narrow().c_str());
           effect.add<JudgeEffect>(judgeStrs[0] + L"(Hold)",Color(255, 0, 0));
-          tapSound.stop();
-          tapSound.play();
         }
       }
       else {
