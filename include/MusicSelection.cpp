@@ -43,6 +43,8 @@ void MusicSelection::update() {
     if (Input::KeyEnter.clicked && infos[selectMusic].getPlayLevels()[selectLevel] != 0) {
       String levelStr[] = { L"easy",L"normal",L"hard" };
 
+      m_data->title = infos[selectMusic].getTitle();
+      m_data->artist = infos[selectMusic].getArtist();
       m_data->folderName = infos[selectMusic].getFolderName();
       m_data->fileName = levelStr[selectLevel];
       m_data->musicFileName = infos[selectMusic].getMusicFileName();

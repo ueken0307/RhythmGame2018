@@ -24,6 +24,8 @@ public:
 
   };
 
+  String title;
+  String artist;
   String folderName;
   String fileName;
   String musicFileName;
