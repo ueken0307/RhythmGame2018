@@ -124,7 +124,6 @@ void Game::update() {
     }
   }
   
-  
 }
 
 void Game::judge() {
@@ -179,10 +178,7 @@ void Game::judge() {
         printf("Miss\n");
         effect.add<JudgeEffect>(L"Miss", Color(0, 0, 255));
       }
-
-
     }
-
   }
   
 
