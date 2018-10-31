@@ -19,7 +19,6 @@ struct  JudgeEffect :IEffect {
 void Game::init() {
   for (int i = 20; i > 0; --i) {
     speedSec.push_back(i*0.1);
-    //printf("%lf\n", speedSec[speedSec.size() - 1]);
   }
   //test
   speed = m_data->speed;
@@ -35,18 +34,16 @@ void Game::init() {
 
   JSONReader reader(L"Musics/" + m_data->folderName + L"/" + m_data->fileName + L".json");
 
-  //printf("---------bpm---------\n");
+  //---------bpm---------
   for (const auto &i : reader[L"bpms"].getArray()) {
     bpms.push_back(BpmData(i[L"time"].get<int32>(), i[L"bpm"].get<double>(), i[L"beat"].get<int32>()));
-    //printf("time:%8d  bpm:%lf\n", i[L"time"].get<int32>(), i[L"bpm"].get<double>());
   }
 
   rhythmManager = RhythmManager(bpms, -offsetSec -beforeSec,m_data->startMeasure);
 
-  //printf("---------note--------\n");
+  //---------note--------
   for (const auto &i : reader[L"notes"].getArray()) {
     notes.push_back(NoteData(i[L"time"].get<int32>(),rhythmManager.BtoS(i[L"time"].get<int32>()), i[L"lane"].get<int32>(), i[L"length"].get<int32>()));
-    //printf("time:%8d  lane:%3d  length:%8d second:%lf\n", i[L"time"].get<int32>(), i[L"lane"].get<int32>(), i[L"length"].get<int32>(), rhythmManager.BtoS(i[L"time"].get<int32>()));
   }
 
   startSec = rhythmManager.getStartSecond();
@@ -85,15 +82,10 @@ void Game::init() {
   tapSound = Sound(L"/200");
   tapSound.setLoop(false);
   tapSound.setVolume(1.0);
-
-  printf("second:%lf\n", rhythmManager.getSecond());
-  printf("Bcount:%8d\n", rhythmManager.getBmsCount());
 }
 
 void Game::update() {
   if (Input::KeyEnter.clicked) {
-    String tmp = L"Next scene is" + m_data->nextScene + L"\n";
-    printf(tmp.narrow().c_str());
     changeScene(m_data->nextScene);
   }
 
@@ -110,8 +102,6 @@ void Game::update() {
     rhythmManager.update();
 
     judge();
-    //printf("second:%lf\n", rhythmManager.getSecond());
-    //printf("Bcount:%8d\n", rhythmManager.getBmsCount());
   }
 
   //自動再生のとき
@@ -142,7 +132,6 @@ void Game::judge() {
           int result = checkJudge(notes[j]);
 
           if (result != -1) {
-            printf("%s %lf\n", judgeStrs[result].narrow().c_str(), notes[j].second - rhythmManager.getSecond());
             //長押しノーツなら、isLongFlagをオンにし、通常ノーツではisEndEffectをオンにする
             if (notes[j].length != 0) {
               notes[j].isLong = true;
@@ -169,14 +158,12 @@ void Game::judge() {
       if (presseds[notes[i].lane]) {
         if (rhythmManager.BtoS(notes[i].count + notes[i].length) - (rhythmManager.getSecond() + judgeOffset) < judgeDurations[judgeDurations.size() - 1]) {
           notes[i].isEndLong = true;
-          printf("%s (Hold)\n", judgeStrs[0].narrow().c_str());
           effect.add<JudgeEffect>(judgeStrs[0] + L"(Hold)",Color(255, 0, 0));
         }
       }
       else {
         //途中で離したとき
         notes[i].isEndEffect = true;
-        printf("Miss\n");
         effect.add<JudgeEffect>(L"Miss", Color(0, 0, 255));
       }
     }
@@ -186,14 +173,14 @@ void Game::judge() {
   //通り過ぎて一番ゆるい判定範囲超えてるノーツをミスにする
   for (auto &i:notes) {
     if (!i.isEndEffect && !i.isLong && i.second - (rhythmManager.getSecond() + judgeOffset) < - judgeDurations[judgeDurations.size() - 1]) {
-      printf("Miss\n");
       i.isEndEffect = true;
+      effect.add<JudgeEffect>(L"Miss", Color(0, 0, 255));
 
       if (i.length != 0) {
-        printf("Miss\n");
+        //始点ミス判定
+
       }
 
-      effect.add<JudgeEffect>(L"Miss", Color(0, 0, 255));
     }
   }
 }
