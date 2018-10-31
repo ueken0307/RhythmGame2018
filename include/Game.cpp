@@ -34,9 +34,19 @@ void Game::init() {
   rhythmManager = RhythmManager(bpms, -m_data->offset -beforeSec,m_data->startMeasure);
 
   //---------note--------
+  m_data->noteNum = 0;
   for (const auto &i : reader[L"notes"].getArray()) {
     notes.push_back(NoteData(i[L"time"].get<int32>(),rhythmManager.BtoS(i[L"time"].get<int32>()), i[L"lane"].get<int32>(), i[L"length"].get<int32>()));
+    m_data->noteNum++;
+    if(i[L"length"].get<int32>()!=0) m_data->noteNum++;
   }
+
+  //判定ごとのカウントを初期化
+  for (auto &i : m_data->judgeCounts) {
+    i = 0;
+  }
+
+  m_data->score = 0;
 
   startSec = rhythmManager.getStartSecond();
 
@@ -92,6 +102,13 @@ void Game::update() {
     rhythmManager.update();
 
     judge();
+
+    double tmpScore = 0.0;
+    double oneNotePoint = 1000000.0 / m_data->noteNum;
+    for (int i = 0; i < m_data->judgePoints.size(); ++i) {
+      tmpScore += m_data->judgePoints[i] * oneNotePoint * m_data->judgeCounts[i];
+    }
+    m_data->score = round(tmpScore);
   }
 
   //自動再生のとき
@@ -132,6 +149,7 @@ void Game::judge() {
             tapSound.stop();
             tapSound.play();
 
+            m_data->judgeCounts[result]++;
             effect.add<JudgeEffect>(m_data->judgeStrs[result] +  L"(" + ToString(notes[j].second - rhythmManager.getSecond()) + L")",(result == 0)? Color(255,0,0):Color(0,255,0));
           }
           
@@ -148,13 +166,15 @@ void Game::judge() {
       if (presseds[notes[i].lane]) {
         if (rhythmManager.BtoS(notes[i].count + notes[i].length) - (rhythmManager.getSecond() + m_data->judgeOffset) < m_data->judgeDurations[m_data->judgeDurations.size() - 1]) {
           notes[i].isEndLong = true;
+          m_data->judgeCounts[0]++;
           effect.add<JudgeEffect>(m_data->judgeStrs[0] + L"(Hold)",Color(255, 0, 0));
         }
       }
       else {
         //途中で離したとき
         notes[i].isEndEffect = true;
-        effect.add<JudgeEffect>(L"Miss", Color(0, 0, 255));
+        m_data->judgeCounts.back()++;
+        effect.add<JudgeEffect>(m_data->judgeStrs.back(), Color(0, 0, 255));
       }
     }
   }
@@ -162,13 +182,14 @@ void Game::judge() {
 
   //通り過ぎて一番ゆるい判定範囲超えてるノーツをミスにする
   for (auto &i:notes) {
-    if (!i.isEndEffect && !i.isLong && i.second - (rhythmManager.getSecond() + m_data->judgeOffset) < - m_data->judgeDurations[m_data->judgeDurations.size() - 1]) {
+    if (!i.isEndEffect && !i.isLong && i.second - (rhythmManager.getSecond() + m_data->judgeOffset) < - m_data->judgeDurations.back()) {
       i.isEndEffect = true;
-      effect.add<JudgeEffect>(L"Miss", Color(0, 0, 255));
+      m_data->judgeCounts.back()++;
+      effect.add<JudgeEffect>(m_data->judgeStrs.back(), Color(0, 0, 255));
 
       if (i.length != 0) {
         //始点ミス判定
-
+        m_data->judgeCounts.back()++;
       }
 
     }
