@@ -22,9 +22,11 @@ public:
 private:
   RhythmManager rhythmManager;
   std::vector<NoteData> notes;
-  std::vector<double> speedSec;
-  int speed;
+
+  //flags
   bool startFlag;
+
+  //x,y,width,height
   int wWidth;
   int wHeight;
   int pedalLaneWidth;
@@ -35,19 +37,15 @@ private:
   int noteHeight;
   int pedalHoldWidth;
   int buttonHoldWidth;
-
   std::array<int, 6> laneStartXs;
   std::array<int, 6> laneWidths;
   std::array<int, 6> holdWidths;
 
-  double offsetSec;
-  double beforeSec;
-  double startSec;
+  //sounds
   Sound music,tapSound;
 
-  std::vector<double> judgeDurations;
-  std::vector<String> judgeStrs;
-  double judgeOffset;
+  double beforeSec;
+  double startSec;
 
   Effect effect;
 };

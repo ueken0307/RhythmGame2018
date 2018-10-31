@@ -17,17 +17,8 @@ struct  JudgeEffect :IEffect {
 };
 
 void Game::init() {
-  for (int i = 20; i > 0; --i) {
-    speedSec.push_back(i*0.1);
-  }
-  //test
-  speed = m_data->speed;
-
   beforeSec = (m_data->startMeasure == 0) ? 1.0 : 0.0;
-  offsetSec = m_data->offset;
-  judgeOffset = m_data->judgeOffset;
 
-  std::vector<BpmData> bpms;
 
   printf("selected -> %ls\n",m_data->folderName.c_str());
   printf("selected -> %ls\n", m_data->fileName.c_str());
@@ -35,11 +26,12 @@ void Game::init() {
   JSONReader reader(L"Musics/" + m_data->folderName + L"/" + m_data->fileName + L".json");
 
   //---------bpm---------
+  std::vector<BpmData> bpms;
   for (const auto &i : reader[L"bpms"].getArray()) {
     bpms.push_back(BpmData(i[L"time"].get<int32>(), i[L"bpm"].get<double>(), i[L"beat"].get<int32>()));
   }
 
-  rhythmManager = RhythmManager(bpms, -offsetSec -beforeSec,m_data->startMeasure);
+  rhythmManager = RhythmManager(bpms, -m_data->offset -beforeSec,m_data->startMeasure);
 
   //---------note--------
   for (const auto &i : reader[L"notes"].getArray()) {
@@ -48,8 +40,10 @@ void Game::init() {
 
   startSec = rhythmManager.getStartSecond();
 
+  //flags
   startFlag = false;
 
+  //x,y,width,height
   wWidth = Window::BaseWidth();
   wHeight = Window::BaseHeight();
   pedalLaneWidth = 200;
@@ -69,11 +63,7 @@ void Game::init() {
 
   holdWidths = { pedalHoldWidth,buttonHoldWidth ,buttonHoldWidth ,buttonHoldWidth ,buttonHoldWidth ,pedalHoldWidth };
 
-  judgeDurations.push_back((1.0 / 60.0) * 3.0);
-  judgeStrs.push_back(L"Perfect");
-  judgeDurations.push_back((1.0 / 60.0) * 5.0);
-  judgeStrs.push_back(L"Good");
-
+  //sounds
   music = Sound(L"Musics/" + m_data->folderName + L"/" + m_data->musicFileName);
   music.setLoop(false);
   music.setVolume(0.5);
@@ -95,7 +85,7 @@ void Game::update() {
   }
 
   if (startFlag) {
-    if (rhythmManager.getSecond() + offsetSec - startSec > 0.0) {
+    if (rhythmManager.getSecond() + m_data->offset - startSec > 0.0) {
       music.play();
     }
 
@@ -142,7 +132,7 @@ void Game::judge() {
             tapSound.stop();
             tapSound.play();
 
-            effect.add<JudgeEffect>(judgeStrs[result] +  L"(" + ToString(notes[j].second - rhythmManager.getSecond()) + L")",(result == 0)? Color(255,0,0):Color(0,255,0));
+            effect.add<JudgeEffect>(m_data->judgeStrs[result] +  L"(" + ToString(notes[j].second - rhythmManager.getSecond()) + L")",(result == 0)? Color(255,0,0):Color(0,255,0));
           }
           
           break;
@@ -156,9 +146,9 @@ void Game::judge() {
     //判定が終わって無くて長押し状態のノーツ
     if (!notes[i].isEndEffect && !notes[i].isEndLong && notes[i].isLong) {
       if (presseds[notes[i].lane]) {
-        if (rhythmManager.BtoS(notes[i].count + notes[i].length) - (rhythmManager.getSecond() + judgeOffset) < judgeDurations[judgeDurations.size() - 1]) {
+        if (rhythmManager.BtoS(notes[i].count + notes[i].length) - (rhythmManager.getSecond() + m_data->judgeOffset) < m_data->judgeDurations[m_data->judgeDurations.size() - 1]) {
           notes[i].isEndLong = true;
-          effect.add<JudgeEffect>(judgeStrs[0] + L"(Hold)",Color(255, 0, 0));
+          effect.add<JudgeEffect>(m_data->judgeStrs[0] + L"(Hold)",Color(255, 0, 0));
         }
       }
       else {
@@ -172,7 +162,7 @@ void Game::judge() {
 
   //通り過ぎて一番ゆるい判定範囲超えてるノーツをミスにする
   for (auto &i:notes) {
-    if (!i.isEndEffect && !i.isLong && i.second - (rhythmManager.getSecond() + judgeOffset) < - judgeDurations[judgeDurations.size() - 1]) {
+    if (!i.isEndEffect && !i.isLong && i.second - (rhythmManager.getSecond() + m_data->judgeOffset) < - m_data->judgeDurations[m_data->judgeDurations.size() - 1]) {
       i.isEndEffect = true;
       effect.add<JudgeEffect>(L"Miss", Color(0, 0, 255));
 
@@ -186,10 +176,10 @@ void Game::judge() {
 }
 
 int Game::checkJudge(NoteData &note){
-  double duration = fabs(rhythmManager.getSecond() + judgeOffset - note.second);
+  double duration = fabs(rhythmManager.getSecond() + m_data->judgeOffset - note.second);
 
-  for (int i = 0; i < judgeDurations.size(); ++i) {
-    if (duration <= judgeDurations[i]) {
+  for (int i = 0; i < m_data->judgeDurations.size(); ++i) {
+    if (duration <= m_data->judgeDurations[i]) {
       return i;
     }
   }
@@ -222,7 +212,7 @@ void Game::drawNotes() const{
 
   for (const auto &i : notes) {
     //ノーツのy座標
-    int y = static_cast<int>(judgeLineY - ((i.second - rhythmManager.getSecond())/speedSec[speed])*judgeLineY);
+    int y = static_cast<int>(judgeLineY - ((i.second - rhythmManager.getSecond())/ m_data->speedSec[m_data->speed])*judgeLineY);
 
     //まだ表示エリアに入っていないノーツは表示しない
     if (y < -noteHeight) {
@@ -240,7 +230,7 @@ void Game::drawNotes() const{
       
     } else {
       //長押し終点ノーツのy座標
-      int endY = static_cast<int>(judgeLineY - ((rhythmManager.BtoS(i.count + i.length) - rhythmManager.getSecond()) / speedSec[speed])*judgeLineY);
+      int endY = static_cast<int>(judgeLineY - ((rhythmManager.BtoS(i.count + i.length) - rhythmManager.getSecond()) / m_data->speedSec[m_data->speed])*judgeLineY);
       
       if (i.isEndLong && endY > judgeLineY) {
         continue;
