@@ -16,6 +16,8 @@ public:
   void drawFadeIn(double t) const override;
   void drawFadeOut(double t) const override;
 
+  void judge();
+  int checkJudge(NoteData &note);
   void drawNotes() const;
 private:
   RhythmManager rhythmManager;
@@ -34,10 +36,20 @@ private:
   int pedalHoldWidth;
   int buttonHoldWidth;
 
+  std::array<int, 6> laneStartXs;
+  std::array<int, 6> laneWidths;
+  std::array<int, 6> holdWidths;
+
   double offsetSec;
   double beforeSec;
   double startSec;
   Sound music,tapSound;
+
+  std::vector<double> judgeDurations;
+  std::vector<String> judgeStrs;
+  double judgeOffset;
+
+  Effect effect;
 };
 
 #endif // GAME_HPP

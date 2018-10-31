@@ -20,6 +20,7 @@ private:
   int selectMusic;
   int selectLevel;
 
+  Font f30;
 };
 
 #endif // MUSIC_SELECTION_HPP
