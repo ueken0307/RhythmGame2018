@@ -9,6 +9,7 @@ public:
   String musicFileName;
   double offset;
   int startMeasure;
+  double judgeOffset;
 
   bool autoFlag;
 

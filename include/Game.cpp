@@ -26,6 +26,7 @@ void Game::init() {
 
   beforeSec = (m_data->startMeasure == 0) ? 1.0 : 0.0;
   offsetSec = m_data->offset;
+  judgeOffset = m_data->judgeOffset;
 
   std::vector<BpmData> bpms;
 
@@ -166,7 +167,7 @@ void Game::judge() {
     //判定が終わって無くて長押し状態のノーツ
     if (!notes[i].isEndEffect && !notes[i].isEndLong && notes[i].isLong) {
       if (presseds[notes[i].lane]) {
-        if (rhythmManager.BtoS(notes[i].count + notes[i].length) - rhythmManager.getSecond() < judgeDurations[judgeDurations.size() - 1]) {
+        if (rhythmManager.BtoS(notes[i].count + notes[i].length) - (rhythmManager.getSecond() + judgeOffset) < judgeDurations[judgeDurations.size() - 1]) {
           notes[i].isEndLong = true;
           printf("%s (Hold)\n", judgeStrs[0].narrow().c_str());
           effect.add<JudgeEffect>(judgeStrs[0] + L"(Hold)",Color(255, 0, 0));
@@ -184,7 +185,7 @@ void Game::judge() {
 
   //通り過ぎて一番ゆるい判定範囲超えてるノーツをミスにする
   for (auto &i:notes) {
-    if (!i.isEndEffect && !i.isLong && i.second - rhythmManager.getSecond() < - judgeDurations[judgeDurations.size() - 1]) {
+    if (!i.isEndEffect && !i.isLong && i.second - (rhythmManager.getSecond() + judgeOffset) < - judgeDurations[judgeDurations.size() - 1]) {
       printf("Miss\n");
       i.isEndEffect = true;
 
@@ -198,7 +199,7 @@ void Game::judge() {
 }
 
 int Game::checkJudge(NoteData &note){
-  double duration = fabs(rhythmManager.getSecond() - note.second);
+  double duration = fabs(rhythmManager.getSecond() + judgeOffset - note.second);
 
   for (int i = 0; i < judgeDurations.size(); ++i) {
     if (duration <= judgeDurations[i]) {

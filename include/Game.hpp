@@ -47,6 +47,7 @@ private:
 
   std::vector<double> judgeDurations;
   std::vector<String> judgeStrs;
+  double judgeOffset;
 
   Effect effect;
 };
