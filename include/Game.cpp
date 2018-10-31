@@ -130,14 +130,14 @@ void Game::judge() {
     if (clickeds[i]) {
       for (int j = 0; j < notes.size(); ++j) {
 
-        if (!notes[j].isEndEffect && !notes[j].isLongFlag && notes[j].lane == i) {
+        if (!notes[j].isEndEffect && !notes[j].isLong && notes[j].lane == i) {
           int result = checkJudge(notes[j]);
 
           if (result != -1) {
             printf("%s %lf\n", judgeStrs[result].narrow().c_str(), notes[j].second - rhythmManager.getSecond());
             //長押しノーツなら、isLongFlagをオンにし、通常ノーツではisEndEffectをオンにする
             if (notes[j].length != 0) {
-              notes[j].isLongFlag = true;
+              notes[j].isLong = true;
             }
             else {
               notes[j].isEndEffect = true;
@@ -157,12 +157,20 @@ void Game::judge() {
   //長押しノーツ処理
   for (int i = 0; i < notes.size(); ++i) {
     //判定が終わって無くて長押し状態のノーツ
-    if (!notes[i].isEndEffect && notes[i].isLongFlag) {
+    if (!notes[i].isEndEffect && !notes[i].isEndLong && notes[i].isLong) {
       if (presseds[notes[i].lane]) {
-
+        if (rhythmManager.BtoS(notes[i].count + notes[i].length) - rhythmManager.getSecond() < judgeDurations[judgeDurations.size() - 1]) {
+          notes[i].isEndLong = true;
+          printf("%s (Hold)\n", judgeStrs[0].narrow().c_str());
+          effect.add<JudgeEffect>(judgeStrs[0] + L"(Hold)",Color(255, 0, 0));
+          tapSound.stop();
+          tapSound.play();
+        }
       }
       else {
-
+        notes[i].isEndEffect = true;
+        printf("Miss\n");
+        effect.add<JudgeEffect>(L"Miss", Color(0, 0, 255));
       }
 
 
@@ -173,7 +181,7 @@ void Game::judge() {
 
   //通り過ぎて一番ゆるい判定範囲超えてるノーツをミスにする
   for (auto &i:notes) {
-    if (!i.isEndEffect && i.second - rhythmManager.getSecond() < - judgeDurations[judgeDurations.size() - 1]) {
+    if (!i.isEndEffect && !i.isLong && i.second - rhythmManager.getSecond() < - judgeDurations[judgeDurations.size() - 1]) {
       printf("Miss\n");
       i.isEndEffect = true;
 

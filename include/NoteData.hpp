@@ -3,13 +3,14 @@
 
 class NoteData {
 public:
-  NoteData(int count, double second, int lane, int length, bool isEndEffect = false,bool isLongFlag = false);
+  NoteData(int count, double second, int lane, int length, bool isEndEffect = false,bool isLong = false,bool isEndLong = false);
   int count;
   double second;
   int lane;
   int length;
   bool isEndEffect;
-  bool isLongFlag;
+  bool isLong;
+  bool isEndLong;
 };
 
 
