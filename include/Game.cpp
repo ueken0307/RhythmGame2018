@@ -174,6 +174,7 @@ void Game::judge() {
         }
       }
       else {
+        //途中で離したとき
         notes[i].isEndEffect = true;
         printf("Miss\n");
         effect.add<JudgeEffect>(L"Miss", Color(0, 0, 255));
@@ -190,6 +191,10 @@ void Game::judge() {
     if (!i.isEndEffect && !i.isLong && i.second - rhythmManager.getSecond() < - judgeDurations[judgeDurations.size() - 1]) {
       printf("Miss\n");
       i.isEndEffect = true;
+
+      if (i.length != 0) {
+        printf("Miss\n");
+      }
 
       effect.add<JudgeEffect>(L"Miss", Color(0, 0, 255));
     }
@@ -229,7 +234,7 @@ void Game::draw() const {
 
 void Game::drawNotes() const{
 
-  ColorF normal(255,255,255), holdStart(0, 100, 200), holdEnd(0, 100, 200), hold(0, 160, 180);
+  Color normal(255,255,255), holdStart(0, 100, 200), holdEnd(0, 100, 200), hold(0, 100, 120),holdActive(0,160,180);
 
   for (const auto &i : notes) {
     //ノーツのy座標
@@ -241,7 +246,7 @@ void Game::drawNotes() const{
     }
 
     //判定の終わってるノーツは表示しない
-    if (i.isEndEffect) {
+    if (i.length ==0 && i.isEndEffect) {
       continue;
     }
 
@@ -253,13 +258,31 @@ void Game::drawNotes() const{
       //長押し終点ノーツのy座標
       int endY = static_cast<int>(judgeLineY - ((rhythmManager.BtoS(i.count + i.length) - rhythmManager.getSecond()) / speedSec[speed])*judgeLineY);
       
-      //長押し部分
-      Rect(laneStartXs[i.lane]  + (laneWidths[i.lane] - holdWidths[i.lane]) / 2, endY + noteHeight / 2, holdWidths[i.lane], y - (endY + noteHeight)).draw(hold);
-      //始点
-      Rect(laneStartXs[i.lane], y - noteHeight / 2, laneWidths[i.lane], noteHeight).draw(holdStart);
-      //終点
-      Rect(laneStartXs[i.lane], endY - noteHeight / 2, laneWidths[i.lane], noteHeight).draw(holdEnd);
+      if (i.isEndLong && endY > judgeLineY) {
+        continue;
+      }
 
+      if (endY < wHeight) {
+
+        if (i.isLong && !i.isEndEffect) {
+          //押している状態のノーツ
+
+          //長押し部分
+          Rect(laneStartXs[i.lane] + (laneWidths[i.lane] - holdWidths[i.lane]) / 2, endY + noteHeight / 2, holdWidths[i.lane], judgeLineY - (endY + noteHeight)).draw(holdActive);
+          //始点
+          Rect(laneStartXs[i.lane], judgeLineY - noteHeight / 2, laneWidths[i.lane], noteHeight).draw(holdStart);
+          //終点
+          Rect(laneStartXs[i.lane], endY - noteHeight / 2, laneWidths[i.lane], noteHeight).draw(holdEnd);
+        }
+        else {
+          //長押し部分
+          Rect(laneStartXs[i.lane] + (laneWidths[i.lane] - holdWidths[i.lane]) / 2, endY + noteHeight / 2, holdWidths[i.lane], y - (endY + noteHeight)).draw(hold);
+          //始点
+          Rect(laneStartXs[i.lane], y - noteHeight / 2, laneWidths[i.lane], noteHeight).draw(holdStart);
+          //終点
+          Rect(laneStartXs[i.lane], endY - noteHeight / 2, laneWidths[i.lane], noteHeight).draw(holdEnd);
+        }
+      }
     }
   }
 }
