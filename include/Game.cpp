@@ -63,6 +63,14 @@ void Game::init() {
   pedalHoldWidth = 100;
   buttonHoldWidth = 50;
 
+  laneStartXs = {sideWidth , sideWidth + pedalLaneWidth , sideWidth + pedalLaneWidth + buttonLaneWidth,
+    sideWidth + pedalLaneWidth + buttonLaneWidth * 2, sideWidth + pedalLaneWidth + buttonLaneWidth * 3,
+    sideWidth + pedalLaneWidth + buttonLaneWidth * 4};
+
+  laneWidths = { pedalLaneWidth,buttonLaneWidth ,buttonLaneWidth ,buttonLaneWidth ,buttonLaneWidth ,pedalLaneWidth };
+
+  holdWidths = { pedalHoldWidth,buttonHoldWidth ,buttonHoldWidth ,buttonHoldWidth ,buttonHoldWidth ,pedalHoldWidth };
+
   judgeDurations.push_back((1.0 / 60.0) * 3.0);
   judgeStrs.push_back(L"Perfect");
   judgeDurations.push_back((1.0 / 60.0) * 5.0);
@@ -241,51 +249,19 @@ void Game::drawNotes() const{
 
     //ノーツ描画
     if (i.length == 0) {
-      //普通のノーツ
-      if (i.lane == 0) {
-        //左ペダル
-        Rect(sideWidth, y - noteHeight / 2, pedalLaneWidth, noteHeight).draw(normal);
-      } else if (i.lane == 5) {
-        //右ペダル
-        Rect(wWidth - sideWidth - pedalLaneWidth, y - noteHeight / 2, pedalLaneWidth, noteHeight).draw(normal);
-      } else {
-        //4鍵
-        Rect(sideWidth + pedalLaneWidth + (i.lane - 1) * buttonLaneWidth, y - noteHeight / 2, buttonLaneWidth, noteHeight).draw(normal);
-      }
-
+      Rect(laneStartXs[i.lane], y - noteHeight / 2, laneWidths[i.lane], noteHeight).draw(normal);
+      
     } else {
       //長押し終点ノーツのy座標
       int endY = static_cast<int>(judgeLineY - ((rhythmManager.BtoS(i.count + i.length) - rhythmManager.getSecond()) / speedSec[speed])*judgeLineY);
+      
+      //長押し部分
+      Rect(laneStartXs[i.lane]  + (laneWidths[i.lane] - holdWidths[i.lane]) / 2, endY + noteHeight / 2, holdWidths[i.lane], y - (endY + noteHeight)).draw(hold);
+      //始点
+      Rect(laneStartXs[i.lane], y - noteHeight / 2, laneWidths[i.lane], noteHeight).draw(holdStart);
+      //終点
+      Rect(laneStartXs[i.lane], endY - noteHeight / 2, laneWidths[i.lane], noteHeight).draw(holdEnd);
 
-      if (i.lane == 0) { //左ペダル
-
-        //長押し部分
-        Rect(sideWidth + (pedalLaneWidth - pedalHoldWidth)/2, endY + noteHeight / 2, pedalHoldWidth, y - (endY + noteHeight)).draw(hold);
-        //始点
-        Rect(sideWidth, y - noteHeight / 2, pedalLaneWidth, noteHeight).draw(holdStart);
-        //終点
-        Rect(sideWidth, endY - noteHeight / 2, pedalLaneWidth, noteHeight).draw(holdEnd);
-
-      } else if (i.lane == 5) {//右ペダル
-        int startX = wWidth - sideWidth - pedalLaneWidth;
-
-        //長押し部分
-        Rect(startX + (pedalLaneWidth - pedalHoldWidth) / 2, endY + noteHeight / 2, pedalHoldWidth, y - (endY + noteHeight)).draw(hold);
-        //始点
-        Rect(startX, y - noteHeight / 2, pedalLaneWidth, noteHeight).draw(holdStart);
-        //終点
-        Rect(startX, endY - noteHeight / 2, pedalLaneWidth, noteHeight).draw(holdEnd);
-
-      } else {//4鍵
-        int startX = sideWidth + pedalLaneWidth + (i.lane - 1) * buttonLaneWidth;
-
-        //長押し部分
-        Rect(startX + (buttonLaneWidth - buttonHoldWidth)/2, endY + noteHeight / 2, buttonHoldWidth, y - (endY + noteHeight)).draw(hold);
-        //始点
-        Rect(startX, y - noteHeight / 2, buttonLaneWidth, noteHeight).draw(holdStart);
-        //終点
-        Rect(startX, endY - noteHeight / 2, buttonLaneWidth, noteHeight).draw(holdEnd);
-      }
     }
   }
 }

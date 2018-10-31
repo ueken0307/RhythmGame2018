@@ -36,6 +36,10 @@ private:
   int pedalHoldWidth;
   int buttonHoldWidth;
 
+  std::array<int, 6> laneStartXs;
+  std::array<int, 6> laneWidths;
+  std::array<int, 6> holdWidths;
+
   double offsetSec;
   double beforeSec;
   double startSec;
