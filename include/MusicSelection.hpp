@@ -21,6 +21,8 @@ private:
   int selectLevel;
 
   Font f30;
+  EasingController<int> scrollY,scrollX;
+  bool isUp;
 };
 
 #endif // MUSIC_SELECTION_HPP

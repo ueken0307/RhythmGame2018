@@ -5,6 +5,10 @@ class ShareData {
 
 public:
   ShareData() {
+    levelStrs.push_back(L"easy");
+    levelStrs.push_back(L"normal");
+    levelStrs.push_back(L"hard");
+
     judgeStrs.push_back(L"Perfect");
     judgeStrs.push_back(L"Good");
     judgeStrs.push_back(L"Miss");
@@ -29,6 +33,9 @@ public:
   String folderName;
   String fileName;
   String musicFileName;
+
+  std::vector<String> levelStrs;
+  int levelNum;
 
   double offset;
   double judgeOffset;
