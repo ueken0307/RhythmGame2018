@@ -1,6 +1,6 @@
 #include "MusicInfo.hpp"
 
-MusicInfo::MusicInfo(String folderName,String musicFileName,String title,String artist,String bpm,double offset,std::vector<int> playLevels) {
+MusicInfo::MusicInfo(String folderName,String musicFileName,String title,String artist,String bpm,double offset,std::vector<int> playLevels, Texture texture) {
   this->folderName = folderName;
   this->musicFileName = musicFileName;
   this->title = title;
@@ -12,4 +12,5 @@ MusicInfo::MusicInfo(String folderName,String musicFileName,String title,String 
     this->playLevels.push_back(i);
   }
 
+  this->texture = texture;
 }
