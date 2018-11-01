@@ -29,11 +29,21 @@ void MusicSelection::init() {
       }
     } while (FindNextFile(hFind,&findFileData));
     FindClose(hFind);
-
-    selectMusic = 0;
-    selectLevel = 0;
   }
   //----------
+
+  selectMusic = 0;
+  selectLevel = 0;
+
+  //前回の選曲を受け継ぐ
+  if (m_data->folderName.length != 0) {
+    for (int i = 0; i < infos.size();++i) {
+      if (m_data->folderName == infos[i].getFolderName()) {
+        selectMusic = i;
+        selectLevel = m_data->levelNum;
+      }
+    }
+  }
 
   f30 = Font(30);
 }
@@ -41,12 +51,12 @@ void MusicSelection::init() {
 void MusicSelection::update() {
   if (infos.size()) {
     if (Input::KeyEnter.clicked && infos[selectMusic].getPlayLevels()[selectLevel] != 0) {
-      String levelStr[] = { L"easy",L"normal",L"hard" };
 
       m_data->title = infos[selectMusic].getTitle();
       m_data->artist = infos[selectMusic].getArtist();
       m_data->folderName = infos[selectMusic].getFolderName();
-      m_data->fileName = levelStr[selectLevel];
+      m_data->fileName = m_data->levelStrs[selectLevel];
+      m_data->levelNum = selectLevel;
       m_data->musicFileName = infos[selectMusic].getMusicFileName();
       m_data->offset = infos[selectMusic].getOffset();
       m_data->startMeasure = 0;
@@ -77,10 +87,9 @@ void MusicSelection::update() {
 }
 
 void MusicSelection::draw() const {
-  String levelStr[] = { L"easy",L"normal",L"hard" };
   f30(L"フォルダ名 :" + infos[selectMusic].getFolderName()).draw();
   f30(L"タイトル :" + infos[selectMusic].getTitle()).draw({ 0,40 });
-  f30(L"難易度" + levelStr[selectLevel] + L"(" + ToString(infos[selectMusic].getPlayLevels()[selectLevel]) + L")").draw({0,80});
+  f30(L"難易度" + m_data->levelStrs[selectLevel] + L"(" + ToString(infos[selectMusic].getPlayLevels()[selectLevel]) + L")").draw({0,80});
 
 }
 
