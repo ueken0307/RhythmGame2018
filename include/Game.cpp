@@ -3,14 +3,15 @@
 struct  JudgeEffect :IEffect {
   double time;
   String str;
-  Font f20;
+  Font f18;
   Color color;
+  int x;
 
-  JudgeEffect(String str,Color color) :f20(20), time(0.2),str(str),color(color) {}
+  JudgeEffect(int x,String str,Color color) :f18(18), x(x),time(0.2),str(str),color(color) {}
 
 
   bool update(double t)override {
-    f20(str).drawCenter({ Window::BaseWidth() / 2, Window::BaseHeight()/2 - t * 200 },color);
+    f18(str).drawCenter({ x, Window::BaseHeight()/2 - t * 200 },color);
 
     return t < time;
   }
@@ -150,7 +151,8 @@ void Game::judge() {
             tapSound.play();
 
             m_data->judgeCounts[result]++;
-            effect.add<JudgeEffect>(m_data->judgeStrs[result] +  L"(" + ToString(notes[j].second - rhythmManager.getSecond()) + L")",(result == 0)? Color(255,0,0):Color(0,255,0));
+            int x = laneStartXs[notes[j].lane] + laneWidths[notes[j].lane] / 2;
+            effect.add<JudgeEffect>(x,m_data->judgeStrs[result],(result == 0)? Color(255,0,0):Color(0,255,0));
           }
           
           break;
@@ -167,14 +169,16 @@ void Game::judge() {
         if (rhythmManager.BtoS(notes[i].count + notes[i].length) - (rhythmManager.getSecond() + m_data->judgeOffset) < m_data->judgeDurations[m_data->judgeDurations.size() - 1]) {
           notes[i].isEndLong = true;
           m_data->judgeCounts[0]++;
-          effect.add<JudgeEffect>(m_data->judgeStrs[0] + L"(Hold)",Color(255, 0, 0));
+          int x = laneStartXs[notes[i].lane] + laneWidths[notes[i].lane] / 2;
+          effect.add<JudgeEffect>(x,m_data->judgeStrs[0],Color(255, 0, 0));
         }
       }
       else {
         //途中で離したとき
         notes[i].isEndEffect = true;
         m_data->judgeCounts.back()++;
-        effect.add<JudgeEffect>(m_data->judgeStrs.back(), Color(0, 0, 255));
+        int x = laneStartXs[notes[i].lane] + laneWidths[notes[i].lane] / 2;
+        effect.add<JudgeEffect>(x,m_data->judgeStrs.back(), Color(0, 0, 255));
       }
     }
   }
@@ -185,7 +189,8 @@ void Game::judge() {
     if (!i.isEndEffect && !i.isLong && i.second - (rhythmManager.getSecond() + m_data->judgeOffset) < - m_data->judgeDurations.back()) {
       i.isEndEffect = true;
       m_data->judgeCounts.back()++;
-      effect.add<JudgeEffect>(m_data->judgeStrs.back(), Color(0, 0, 255));
+      int x = laneStartXs[i.lane] + laneWidths[notes[i.lane].lane] / 2;
+      effect.add<JudgeEffect>(x,m_data->judgeStrs.back(), Color(0, 0, 255));
 
       if (i.length != 0) {
         //始点ミス判定
