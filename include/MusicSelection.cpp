@@ -107,6 +107,7 @@ void MusicSelection::update() {
       m_data->autoFlag = false;
       m_data->judgeOffset = Parse<double>(setting.textField(L"offset").text);
       m_data->nextScene = L"Result";
+      m_data->jacket = infos[selectMusic].getTexture();
       changeScene(L"AdjustSpeed");
     }
 

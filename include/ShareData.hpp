@@ -56,6 +56,8 @@ public:
   std::vector<int> judgeCounts;
 
   String nextScene;
+
+  Texture jacket;
 };
 
 
