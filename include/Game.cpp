@@ -83,6 +83,11 @@ void Game::init() {
   tapSound = Sound(L"/200");
   tapSound.setLoop(false);
   tapSound.setVolume(1.0);
+
+  combo = 0;
+  m_data->maxCombo = 0;
+
+  f30 = Font(30);
 }
 
 void Game::update() {
@@ -153,6 +158,7 @@ void Game::judge() {
             m_data->judgeCounts[result]++;
             int x = laneStartXs[notes[j].lane] + laneWidths[notes[j].lane] / 2;
             effect.add<JudgeEffect>(x,m_data->judgeStrs[result],(result == 0)? Color(255,0,0):Color(0,255,0));
+            combo++;
           }
           
           break;
@@ -171,6 +177,7 @@ void Game::judge() {
           m_data->judgeCounts[0]++;
           int x = laneStartXs[notes[i].lane] + laneWidths[notes[i].lane] / 2;
           effect.add<JudgeEffect>(x,m_data->judgeStrs[0],Color(255, 0, 0));
+          combo++;
         }
       }
       else {
@@ -179,6 +186,8 @@ void Game::judge() {
         m_data->judgeCounts.back()++;
         int x = laneStartXs[notes[i].lane] + laneWidths[notes[i].lane] / 2;
         effect.add<JudgeEffect>(x,m_data->judgeStrs.back(), Color(0, 0, 255));
+        m_data->maxCombo = std::max(m_data->maxCombo, combo);
+        combo = 0;
       }
     }
   }
@@ -191,6 +200,8 @@ void Game::judge() {
       m_data->judgeCounts.back()++;
       int x = laneStartXs[i.lane] + laneWidths[notes[i.lane].lane] / 2;
       effect.add<JudgeEffect>(x,m_data->judgeStrs.back(), Color(0, 0, 255));
+      m_data->maxCombo = std::max(m_data->maxCombo, combo);
+      combo = 0;
 
       if (i.length != 0) {
         //始点ミス判定
@@ -231,6 +242,7 @@ void Game::draw() const {
   //judgeLine
   Line(sideWidth, judgeLineY, wWidth - sideWidth, judgeLineY).draw(2.0, Color(255,0,0));
   
+  f30(ToString(combo)).drawCenter({wWidth/2,wHeight/2 - 100});
   effect.update();
 }
 
