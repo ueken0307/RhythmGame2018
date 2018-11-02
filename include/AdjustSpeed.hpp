@@ -4,6 +4,7 @@
 #include <HamFramework.hpp>
 
 #include"ShareData.hpp"
+#include"RhythmManager.hpp"
 
 class AdjustSpeed :public SceneManager<String, ShareData>::Scene {
 public:
@@ -14,7 +15,11 @@ public:
   void drawFadeOut(double t) const override;
 
 private:
+  RhythmManager rhythmManager;
+  int judgeLineY;
+  int noteHeight;
 
+  Font f30;
 };
 
 #endif // !ADJUST_HPP

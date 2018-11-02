@@ -67,7 +67,6 @@ void MusicSelection::update() {
       m_data->autoFlag = false;
       m_data->judgeOffset = 0.00;
       m_data->nextScene = L"Result";
-      m_data->speed = 14;
       changeScene(L"AdjustSpeed");
     }
 
