@@ -26,6 +26,8 @@ public:
       speedSec.push_back(i*0.1);
     }
 
+    judgeOffset = 0.0;
+
   };
 
   String title;
