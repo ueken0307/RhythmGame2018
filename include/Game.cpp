@@ -3,14 +3,15 @@
 struct  JudgeEffect :IEffect {
   double time;
   String str;
-  Font f20;
+  Font f18;
   Color color;
+  int x;
 
-  JudgeEffect(String str,Color color) :f20(20), time(0.2),str(str),color(color) {}
+  JudgeEffect(int x,String str,Color color) :f18(18), x(x),time(0.2),str(str),color(color) {}
 
 
   bool update(double t)override {
-    f20(str).drawCenter({ Window::BaseWidth() / 2, Window::BaseHeight()/2 - t * 200 },color);
+    f18(str).drawCenter({ x, Window::BaseHeight()/2 - t * 200 },color);
 
     return t < time;
   }
@@ -58,16 +59,16 @@ void Game::init() {
   wHeight = Window::BaseHeight();
   pedalLaneWidth = 200;
   buttonLaneWidth = 100;
-  allLaneWidth = pedalLaneWidth * 2 + buttonLaneWidth * 4;
+  allLaneWidth = pedalLaneWidth * 2 + buttonLaneWidth * 4 + 50 * 2;
   sideWidth = (wWidth - allLaneWidth) / 2;
   judgeLineY = 1000;
   noteHeight = 10;
   pedalHoldWidth = 100;
   buttonHoldWidth = 50;
 
-  laneStartXs = {sideWidth , sideWidth + pedalLaneWidth , sideWidth + pedalLaneWidth + buttonLaneWidth,
-    sideWidth + pedalLaneWidth + buttonLaneWidth * 2, sideWidth + pedalLaneWidth + buttonLaneWidth * 3,
-    sideWidth + pedalLaneWidth + buttonLaneWidth * 4};
+  laneStartXs = {sideWidth , sideWidth + pedalLaneWidth + 50, sideWidth + pedalLaneWidth + buttonLaneWidth + 50,
+    sideWidth + pedalLaneWidth + buttonLaneWidth * 2 + 50, sideWidth + pedalLaneWidth + buttonLaneWidth * 3 + 50,
+    sideWidth + pedalLaneWidth + buttonLaneWidth * 4 + 50 *2 };
 
   laneWidths = { pedalLaneWidth,buttonLaneWidth ,buttonLaneWidth ,buttonLaneWidth ,buttonLaneWidth ,pedalLaneWidth };
 
@@ -82,6 +83,11 @@ void Game::init() {
   tapSound = Sound(L"/200");
   tapSound.setLoop(false);
   tapSound.setVolume(1.0);
+
+  combo = 0;
+  m_data->maxCombo = 0;
+
+  f30 = Font(30);
 }
 
 void Game::update() {
@@ -150,7 +156,9 @@ void Game::judge() {
             tapSound.play();
 
             m_data->judgeCounts[result]++;
-            effect.add<JudgeEffect>(m_data->judgeStrs[result] +  L"(" + ToString(notes[j].second - rhythmManager.getSecond()) + L")",(result == 0)? Color(255,0,0):Color(0,255,0));
+            int x = laneStartXs[notes[j].lane] + laneWidths[notes[j].lane] / 2;
+            effect.add<JudgeEffect>(x,m_data->judgeStrs[result],(result == 0)? Color(255,0,0):Color(0,255,0));
+            combo++;
           }
           
           break;
@@ -167,14 +175,19 @@ void Game::judge() {
         if (rhythmManager.BtoS(notes[i].count + notes[i].length) - (rhythmManager.getSecond() + m_data->judgeOffset) < m_data->judgeDurations[m_data->judgeDurations.size() - 1]) {
           notes[i].isEndLong = true;
           m_data->judgeCounts[0]++;
-          effect.add<JudgeEffect>(m_data->judgeStrs[0] + L"(Hold)",Color(255, 0, 0));
+          int x = laneStartXs[notes[i].lane] + laneWidths[notes[i].lane] / 2;
+          effect.add<JudgeEffect>(x,m_data->judgeStrs[0],Color(255, 0, 0));
+          combo++;
         }
       }
       else {
         //途中で離したとき
         notes[i].isEndEffect = true;
         m_data->judgeCounts.back()++;
-        effect.add<JudgeEffect>(m_data->judgeStrs.back(), Color(0, 0, 255));
+        int x = laneStartXs[notes[i].lane] + laneWidths[notes[i].lane] / 2;
+        effect.add<JudgeEffect>(x,m_data->judgeStrs.back(), Color(0, 0, 255));
+        m_data->maxCombo = std::max(m_data->maxCombo, combo);
+        combo = 0;
       }
     }
   }
@@ -185,7 +198,10 @@ void Game::judge() {
     if (!i.isEndEffect && !i.isLong && i.second - (rhythmManager.getSecond() + m_data->judgeOffset) < - m_data->judgeDurations.back()) {
       i.isEndEffect = true;
       m_data->judgeCounts.back()++;
-      effect.add<JudgeEffect>(m_data->judgeStrs.back(), Color(0, 0, 255));
+      int x = laneStartXs[i.lane] + laneWidths[notes[i.lane].lane] / 2;
+      effect.add<JudgeEffect>(x,m_data->judgeStrs.back(), Color(0, 0, 255));
+      m_data->maxCombo = std::max(m_data->maxCombo, combo);
+      combo = 0;
 
       if (i.length != 0) {
         //始点ミス判定
@@ -209,22 +225,29 @@ int Game::checkJudge(NoteData &note){
 }
 
 void Game::draw() const {
+  for (int i = 0; i < 6; ++i) {
+    Rect(laneStartXs[i], 0, laneWidths[i], wHeight).draw(Color(0));
+  }
 
   drawNotes();
 
-  //first
-  Line(sideWidth, 0, sideWidth, wHeight).draw();
-  //final
-  Line(wWidth - sideWidth, 0, wWidth - sideWidth, wHeight).draw();
-  //second～
-  for (int i = 0; i < 5; ++i) {
-    Line(sideWidth + pedalLaneWidth + i * buttonLaneWidth, 0, sideWidth + pedalLaneWidth + i * buttonLaneWidth, wHeight).draw();
+  
+  //vertical line
+  for (int i = 0; i <6; ++i) {
+    Line(laneStartXs[i], 0, laneStartXs[i], wHeight).draw(2.0,Color(0, 120, 200));
   }
+  Line(laneStartXs[0] + laneWidths[0], 0, laneStartXs[0] + laneWidths[0], wHeight).draw(2.0, Color(0, 120, 200));
+  Line(wWidth - sideWidth, 0, wWidth - sideWidth, wHeight).draw(2.0, Color(0,120,200));
   
   //judgeLine
-  Line(sideWidth, judgeLineY, wWidth - sideWidth, judgeLineY).draw();
+  Line(sideWidth, judgeLineY, wWidth - sideWidth, judgeLineY).draw(2.0, Color(255,0,0));
   
+  f30(ToString(combo)).drawCenter({wWidth/2,wHeight/2 - 100});
   effect.update();
+
+  if (!startFlag) {
+    f30(L"いずれかのボタンを押すとスタートします").drawCenter({ wWidth / 2,wHeight / 2 },Color(255,0,0));
+  }
 }
 
 void Game::drawNotes() const{

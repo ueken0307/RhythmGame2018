@@ -50,12 +50,15 @@ public:
   int noteNum;
 
   int score;
+  int maxCombo;
   std::vector<String> judgeStrs;
   std::vector<double> judgeDurations;
   std::vector<double> judgePoints;
   std::vector<int> judgeCounts;
 
   String nextScene;
+
+  Texture jacket;
 };
 
 

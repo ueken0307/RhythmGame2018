@@ -47,6 +47,10 @@ private:
   double beforeSec;
   double startSec;
 
+  int combo;
+  
+  Font f30;
+
   Effect effect;
 };
 
