@@ -21,8 +21,9 @@ void Result::draw() const {
   Line({ 1400,0 }, { 1920 / 2,1080 }).draw(5.0,Color(83, 255, 0));
 
   f120(ToString(m_data->score)).draw(1000 - f120(ToString(m_data->score)).region(0, 0).w, 200,Color(0, 217, 255));
+  f60(L"Max Combo:" + ToString(m_data->maxCombo)).draw(100,400, Color(0, 217, 255));
   for (int i = 0; i < m_data->judgeCounts.size(); ++i) {
-    f60(m_data->judgeStrs[i] + L":" + ToString(m_data->judgeCounts[i])).draw(100, 400 + f60(m_data->judgeStrs[i]).region(0,0).h * (i + 1), Color(0, 217, 255));
+    f60(m_data->judgeStrs[i] + L":" + ToString(m_data->judgeCounts[i])).draw(100, 420 + f60(m_data->judgeStrs[i]).region(0,0).h * (i + 1), Color(0, 217, 255));
   }
 
   if (m_data->score == 1000000) {
