@@ -166,6 +166,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\include\AdjustSpeed.cpp" />
     <ClCompile Include="..\..\include\Game.cpp" />
     <ClCompile Include="..\..\include\MusicInfo.cpp" />
     <ClCompile Include="..\..\include\MusicSelection.cpp" />
@@ -289,6 +290,7 @@
     <Font Include="Example\YomogiFont.ttf" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\AdjustSpeed.hpp" />
     <ClInclude Include="..\..\include\Game.hpp" />
     <ClInclude Include="..\..\include\MusicInfo.hpp" />
     <ClInclude Include="..\..\include\MusicSelection.hpp" />
