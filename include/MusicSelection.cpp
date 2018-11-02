@@ -159,17 +159,15 @@ void MusicSelection::draw() const {
     if (isUp) {
       int x = 250 - i * 25 + scrollX.easeOut();
       int y = -210 + i * 140 + -scrollY.easeOut();
-      Rect(x, y, 800, 100).draw();
-      f30(L"タイトル :" + infos[(selectMusic + infos.size() + i - 5) % infos.size()].getTitle()).draw({ x,y },Color(0,0,0));
-      f30(L"フォルダ名 :" + infos[(selectMusic + infos.size() + i - 5) % infos.size()].getFolderName()).draw({ x,y + 40 }, Color(0, 0, 0));
+      s3d::RoundRect(x, y, 800, 100,20).draw(Color(170));
+      f30(infos[(selectMusic + infos.size() + i - 5) % infos.size()].getTitle()).drawCenter({ x + 400,y + 50 },Color(255));
 
     }
     else {
       int x = 250 - i * 25 - scrollX.easeOut();
       int y = -210 + i * 140 + scrollY.easeOut();
-      Rect(x, y, 800, 100).draw();
-      f30(L"タイトル :" + infos[(selectMusic + infos.size() + i - 5) % infos.size()].getTitle()).draw({ x,y }, Color(0, 0, 0));
-      f30(L"フォルダ名 :" + infos[(selectMusic + infos.size() + i - 5) % infos.size()].getFolderName()).draw({ x,y + 40 }, Color(0, 0, 0));
+      s3d::RoundRect(x, y, 800, 100,20).draw(Color(170));
+      f30(infos[(selectMusic + infos.size() + i - 5) % infos.size()].getTitle()).drawCenter({ x + 400,y + 50 }, Color(255));
     }
   }
 
@@ -180,15 +178,18 @@ void MusicSelection::draw() const {
   //ジャケット
   Rect(1250, 50, 500)(infos[selectMusic].getTexture()).draw();
   //タイトル
-  f30(infos[selectMusic].getTitle()).draw(1100, 600);
+  f30(infos[selectMusic].getTitle()).drawCenter(1500, 600);
   //アーティスト
-  f30(infos[selectMusic].getArtist()).draw(1100, 640);
+  f30(infos[selectMusic].getArtist()).drawCenter(1500, 670);
   //bpm
-  f30(infos[selectMusic].getBpm()).draw(1100, 680);
+  f30(infos[selectMusic].getBpm()).drawCenter(1500, 740);
 
+  std::vector<Color> levelColors = {Color(0,200,0),Color(200,100,0), Color(200,0,0)};
   for (int i = 0; i < 3; ++i) {
-    Rect(1000 + i * 300, 850, 150).draw((selectLevel == i)? Color(255,0,0) : Color(255));
-    f30(ToString(infos[selectMusic].getPlayLevels()[i])).draw({ 1000 + i * 300, 850 }, Color(0));
+    if(i == selectLevel)s3d::Circle(1200 + i * 250, 900, 120).draw(Color(100));
+    s3d::Circle(1200 + i * 250, 900, 100).draw((infos[selectMusic].getPlayLevels()[i] == 0)? Color(150) : levelColors[i]);
+
+    f30(m_data->levelStrs[i]).drawCenter(1200 + i * 250, 900, Color(255));
   }
 
 }
