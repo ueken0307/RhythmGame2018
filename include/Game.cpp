@@ -58,16 +58,16 @@ void Game::init() {
   wHeight = Window::BaseHeight();
   pedalLaneWidth = 200;
   buttonLaneWidth = 100;
-  allLaneWidth = pedalLaneWidth * 2 + buttonLaneWidth * 4;
+  allLaneWidth = pedalLaneWidth * 2 + buttonLaneWidth * 4 + 50 * 2;
   sideWidth = (wWidth - allLaneWidth) / 2;
   judgeLineY = 1000;
   noteHeight = 10;
   pedalHoldWidth = 100;
   buttonHoldWidth = 50;
 
-  laneStartXs = {sideWidth , sideWidth + pedalLaneWidth , sideWidth + pedalLaneWidth + buttonLaneWidth,
-    sideWidth + pedalLaneWidth + buttonLaneWidth * 2, sideWidth + pedalLaneWidth + buttonLaneWidth * 3,
-    sideWidth + pedalLaneWidth + buttonLaneWidth * 4};
+  laneStartXs = {sideWidth , sideWidth + pedalLaneWidth + 50, sideWidth + pedalLaneWidth + buttonLaneWidth + 50,
+    sideWidth + pedalLaneWidth + buttonLaneWidth * 2 + 50, sideWidth + pedalLaneWidth + buttonLaneWidth * 3 + 50,
+    sideWidth + pedalLaneWidth + buttonLaneWidth * 4 + 50 *2 };
 
   laneWidths = { pedalLaneWidth,buttonLaneWidth ,buttonLaneWidth ,buttonLaneWidth ,buttonLaneWidth ,pedalLaneWidth };
 
@@ -209,20 +209,22 @@ int Game::checkJudge(NoteData &note){
 }
 
 void Game::draw() const {
+  for (int i = 0; i < 6; ++i) {
+    Rect(laneStartXs[i], 0, laneWidths[i], wHeight).draw(Color(0));
+  }
 
   drawNotes();
 
-  //first
-  Line(sideWidth, 0, sideWidth, wHeight).draw();
-  //final
-  Line(wWidth - sideWidth, 0, wWidth - sideWidth, wHeight).draw();
-  //second`
-  for (int i = 0; i < 5; ++i) {
-    Line(sideWidth + pedalLaneWidth + i * buttonLaneWidth, 0, sideWidth + pedalLaneWidth + i * buttonLaneWidth, wHeight).draw();
+  
+  //vertical line
+  for (int i = 0; i <6; ++i) {
+    Line(laneStartXs[i], 0, laneStartXs[i], wHeight).draw(2.0,Color(0, 120, 200));
   }
+  Line(laneStartXs[0] + laneWidths[0], 0, laneStartXs[0] + laneWidths[0], wHeight).draw(2.0, Color(0, 120, 200));
+  Line(wWidth - sideWidth, 0, wWidth - sideWidth, wHeight).draw(2.0, Color(0,120,200));
   
   //judgeLine
-  Line(sideWidth, judgeLineY, wWidth - sideWidth, judgeLineY).draw();
+  Line(sideWidth, judgeLineY, wWidth - sideWidth, judgeLineY).draw(2.0, Color(255,0,0));
   
   effect.update();
 }
