@@ -244,6 +244,10 @@ void Game::draw() const {
   
   f30(ToString(combo)).drawCenter({wWidth/2,wHeight/2 - 100});
   effect.update();
+
+  if (!startFlag) {
+    f30(L"いずれかのボタンを押すとスタートします").drawCenter({ wWidth / 2,wHeight / 2 },Color(255,0,0));
+  }
 }
 
 void Game::drawNotes() const{
