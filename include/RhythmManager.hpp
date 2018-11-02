@@ -8,7 +8,7 @@
 
 class BpmData {
 public:
-  BpmData(int count, double bpm, int beay);
+  BpmData(int count, double bpm, int beat);
   int count;
   double bpm;
   int beat;
