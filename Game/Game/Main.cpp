@@ -4,6 +4,7 @@
 
 #include "ShareData.hpp"
 #include "MusicSelection.hpp"
+#include "AdjustSpeed.hpp"
 #include "Game.hpp"
 #include "Result.hpp"
 
@@ -29,6 +30,7 @@ void Main(){
   //----------
   SceneManager<String,ShareData> scene;
   scene.add<MusicSelection>(L"MusicSelection");
+  scene.add<AdjustSpeed>(L"AdjustSpeed");
   scene.add<Game>(L"Game");
   scene.add<Result>(L"Result");
   //----------  

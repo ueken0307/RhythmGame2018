@@ -67,8 +67,7 @@ void MusicSelection::update() {
       m_data->autoFlag = false;
       m_data->judgeOffset = 0.00;
       m_data->nextScene = L"Result";
-      m_data->speed = 14;
-      changeScene(L"Game");
+      changeScene(L"AdjustSpeed");
     }
 
     if ((Input::KeyRight.clicked || Input::KeyL.clicked) && selectLevel < (static_cast<int>(infos[selectMusic].getPlayLevels().size()) - 1)) {
