@@ -15,7 +15,8 @@ public:
   void drawFadeOut(double t) const override;
 
 private:
-  Font f30;
+  Font f30,f60,f120;
+  std::vector<Texture> judgePics;
 };
 
 #endif // RESULT_HPP
