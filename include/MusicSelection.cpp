@@ -50,9 +50,49 @@ void MusicSelection::init() {
   scrollY = EasingController<int>(0, 140, Easing::Quad, 200);
   scrollX = EasingController<int>(0, 25, Easing::Quad, 200);
   isUp = false;
+
+  setting = GUI(GUIStyle::Default);
+  setting.setTitle(L"設定");
+  setting.add(GUIText::Create(L"オフセット値"));
+  setting.addln(L"offset",GUITextField::Create(8));
+  setting.textField(L"offset").setText(ToString(m_data->judgeOffset));
+  setting.add(L"full", GUIButton::Create(L"フルスクリーンにする"));
+  setting.addln(L"window", GUIButton::Create(L"ウィンドウにする"));
+  setting.add(L"ok", GUIButton::Create(L"ok"));
+  setting.show(false);
+
+
 }
 
 void MusicSelection::update() {
+  if (Input::KeyE.clicked) {
+    setting.show(true);
+    setting.setCenter(Point(Window::Width() / 2, Window::Height() / 2));
+  }
+
+  if (setting.button(L"ok").pushed) {
+    setting.show(false);
+  }
+
+  if (Window::GetState().fullscreen) {
+    setting.button(L"full").enabled = false;
+    setting.button(L"window").enabled = true;
+  }
+  else {
+    setting.button(L"full").enabled = true;
+    setting.button(L"window").enabled = false;
+  }
+
+  if (setting.button(L"full").pushed) {
+    Window::SetFullscreen(true, Graphics::GetFullScreenSize().back());
+    setting.setCenter(Point(Window::Width() / 2, Window::Height() / 2));
+  }
+
+  if (setting.button(L"window").pushed) {
+    Window::SetFullscreen(false, Size(672, 378));
+    setting.setCenter(Point(Window::Width() / 2, Window::Height() / 2));
+  }
+
   if (infos.size()) {
     if (Input::KeyEnter.clicked && infos[selectMusic].getPlayLevels()[selectLevel] != 0) {
 
@@ -65,7 +105,7 @@ void MusicSelection::update() {
       m_data->offset = infos[selectMusic].getOffset();
       m_data->startMeasure = 0;
       m_data->autoFlag = false;
-      m_data->judgeOffset = 0.00;
+      m_data->judgeOffset = Parse<double>(setting.textField(L"offset").text);
       m_data->nextScene = L"Result";
       changeScene(L"AdjustSpeed");
     }

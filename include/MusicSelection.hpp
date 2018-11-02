@@ -23,6 +23,8 @@ private:
   Font f30;
   EasingController<int> scrollY,scrollX;
   bool isUp;
+
+  GUI setting;
 };
 
 #endif // MUSIC_SELECTION_HPP
