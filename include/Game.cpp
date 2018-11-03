@@ -225,8 +225,13 @@ int Game::checkJudge(NoteData &note){
 }
 
 void Game::draw() const {
+  std::vector<bool> isPresseds = { Input::KeyA.pressed,Input::KeyS.pressed,Input::KeyD.pressed,Input::KeyK.pressed,Input::KeyL.pressed,Input::KeySemicolon.pressed };
   for (int i = 0; i < 6; ++i) {
     Rect(laneStartXs[i], 0, laneWidths[i], wHeight).draw(Color(0));
+
+    if (isPresseds[i]){
+      Rect(laneStartXs[i], 600, laneWidths[i], judgeLineY - 600).draw({Color(255,255,255,0),Color(255,255,255,0), Color(255,255,255,100), Color(255,255,255,100) });
+    }
   }
 
   drawNotes();
