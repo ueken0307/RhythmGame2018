@@ -91,16 +91,11 @@ void Game::init() {
 }
 
 void Game::update() {
-  if (Input::KeyEnter.clicked) {
-    changeScene(m_data->nextScene);
-  }
-
-  if (!startFlag && (Input::KeySpace.clicked || Input::KeyS.clicked || Input::KeyD.clicked || Input::KeyK.clicked || Input::KeyL.clicked)) {
-    startFlag = true;
-    rhythmManager.start();
-  }
-
   if (startFlag) {
+    if (Input::KeyEnter.clicked) {
+      changeScene(m_data->nextScene);
+    }
+
     if (rhythmManager.getSecond() + m_data->offset - startSec > 0.0) {
       music.play();
     }
@@ -115,6 +110,11 @@ void Game::update() {
       tmpScore += m_data->judgePoints[i] * oneNotePoint * m_data->judgeCounts[i];
     }
     m_data->score = round(tmpScore);
+  }
+
+  if (!startFlag && (Input::KeySpace.clicked || Input::KeyS.clicked || Input::KeyD.clicked || Input::KeyK.clicked || Input::KeyL.clicked || Input::KeyEnter.clicked)) {
+    startFlag = true;
+    rhythmManager.start();
   }
 
   //©“®Ä¶‚Ì‚Æ‚«
