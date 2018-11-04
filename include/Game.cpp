@@ -88,6 +88,7 @@ void Game::init() {
   m_data->maxCombo = 0;
 
   f30 = Font(30);
+  pedalPic = Texture(L"/220");
 }
 
 void Game::update() {
@@ -273,9 +274,13 @@ void Game::drawNotes() const{
       continue;
     }
 
+    int pedalWidth = 60;
+    int pedalHeight = 100;
+
     //ノーツ描画
     if (i.length == 0) {
       Rect(laneStartXs[i.lane], y - noteHeight / 2, laneWidths[i.lane], noteHeight).draw(normal);
+      if(i.lane == 0 || i.lane == 5) Rect(laneStartXs[i.lane] + laneWidths[i.lane]/2 - pedalWidth/2, y - pedalHeight/2, pedalWidth, pedalHeight)((i.lane == 0) ? pedalPic : pedalPic.mirror()).draw();
       
     } else {
       //長押し終点ノーツのy座標
@@ -294,6 +299,7 @@ void Game::drawNotes() const{
           Rect(laneStartXs[i.lane] + (laneWidths[i.lane] - holdWidths[i.lane]) / 2, endY + noteHeight / 2, holdWidths[i.lane], judgeLineY - (endY + noteHeight)).draw(holdActive);
           //始点
           Rect(laneStartXs[i.lane], judgeLineY - noteHeight / 2, laneWidths[i.lane], noteHeight).draw(holdStart);
+          if (i.lane == 0 || i.lane == 5) Rect(laneStartXs[i.lane] + laneWidths[i.lane] / 2 - pedalWidth/2, judgeLineY - pedalHeight / 2, pedalWidth, pedalHeight)((i.lane == 0) ? pedalPic : pedalPic.mirror()).draw();
           //終点
           Rect(laneStartXs[i.lane], endY - noteHeight / 2, laneWidths[i.lane], noteHeight).draw(holdEnd);
         }
@@ -302,6 +308,7 @@ void Game::drawNotes() const{
           Rect(laneStartXs[i.lane] + (laneWidths[i.lane] - holdWidths[i.lane]) / 2, endY + noteHeight / 2, holdWidths[i.lane], y - (endY + noteHeight)).draw(hold);
           //始点
           Rect(laneStartXs[i.lane], y - noteHeight / 2, laneWidths[i.lane], noteHeight).draw(holdStart);
+          if (i.lane == 0 || i.lane == 5) Rect(laneStartXs[i.lane] + laneWidths[i.lane] / 2 - pedalWidth/2, y - pedalHeight / 2, pedalWidth, pedalHeight)((i.lane==0)?pedalPic:pedalPic.mirror()).draw();
           //終点
           Rect(laneStartXs[i.lane], endY - noteHeight / 2, laneWidths[i.lane], noteHeight).draw(holdEnd);
         }

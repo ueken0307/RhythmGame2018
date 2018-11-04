@@ -52,6 +52,7 @@ private:
   Font f30;
 
   Effect effect;
+  Texture pedalPic;
 };
 
 #endif // GAME_HPP

@@ -64,3 +64,6 @@
 214     FILE    "judgePic/C.png"
 215     FILE    "judgePic/D.png"
 216     FILE    "judgePic/E.png"
+
+//pedal pic
+220     FILE    "pedal.png"
