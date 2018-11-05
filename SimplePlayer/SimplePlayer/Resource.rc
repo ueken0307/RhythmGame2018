@@ -55,3 +55,6 @@
 
 //effect sound
 200     FILE    "button.mp3"
+
+//pedal pic
+220     FILE    "pedal.png"
