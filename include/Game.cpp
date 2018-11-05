@@ -89,21 +89,42 @@ void Game::init() {
 
   f30 = Font(30);
   pedalPic = Texture(L"/220");
+
+  for (auto &i : notes){
+    if (i.count < m_data->startMeasure * 9600) {
+      i.isEndEffect = true;
+    }
+  }
 }
 
 void Game::update() {
+
   if (startFlag) {
     if (Input::KeyEnter.clicked) {
       changeScene(m_data->nextScene);
     }
 
+
+
+    rhythmManager.update();
+
     if (rhythmManager.getSecond() + m_data->offset - startSec > 0.0) {
       music.play();
     }
 
-    rhythmManager.update();
+    if (!m_data->autoFlag) {
+      judge();
+    }
+    else {
+      for (auto &i : notes) {
+        if (!i.isEndEffect && i.second <= rhythmManager.getSecond()) {
+          i.isEndEffect = true;
+          tapSound.stop();
+          tapSound.play();
+        }
+      }
+    }
 
-    judge();
 
     double tmpScore = 0.0;
     double oneNotePoint = 1000000.0 / m_data->noteNum;
@@ -111,24 +132,14 @@ void Game::update() {
       tmpScore += m_data->judgePoints[i] * oneNotePoint * m_data->judgeCounts[i];
     }
     m_data->score = round(tmpScore);
-  }
 
-  if (!startFlag && (Input::KeySpace.clicked || Input::KeyS.clicked || Input::KeyD.clicked || Input::KeyK.clicked || Input::KeyL.clicked || Input::KeyEnter.clicked)) {
-    startFlag = true;
-    rhythmManager.start();
   }
-
-  //Ž©“®Ä¶‚Ì‚Æ‚«
-  if (m_data->autoFlag) {
-    for (auto &i : notes) {
-      if (!i.isEndEffect && i.second <= rhythmManager.getSecond()) {
-        i.isEndEffect = true;
-        tapSound.stop();
-        tapSound.play();
-      }
+  else {
+    if (!startFlag && (Input::KeySpace.clicked || Input::KeyS.clicked || Input::KeyD.clicked || Input::KeyK.clicked || Input::KeyL.clicked || Input::KeyEnter.clicked)) {
+      startFlag = true;
+      rhythmManager.start();
     }
-  }
-  
+  }  
 }
 
 void Game::judge() {
@@ -230,7 +241,7 @@ void Game::draw() const {
   for (int i = 0; i < 6; ++i) {
     Rect(laneStartXs[i], 0, laneWidths[i], wHeight).draw(Color(0));
 
-    if (isPresseds[i]){
+    if (isPresseds[i] && !m_data->autoFlag){
       Rect(laneStartXs[i], 600, laneWidths[i], judgeLineY - 600).draw({Color(255,255,255,0),Color(255,255,255,0), Color(255,255,255,100), Color(255,255,255,100) });
     }
   }

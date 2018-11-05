@@ -5,6 +5,8 @@ class ShareData {
 
 public:
   ShareData() {
+    startMeasure = 0;
+
     levelStrs.push_back(L"easy");
     levelStrs.push_back(L"normal");
     levelStrs.push_back(L"hard");
