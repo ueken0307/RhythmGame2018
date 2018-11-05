@@ -51,4 +51,19 @@
 
 // App Resource
 100		ICON	"Icon.ico"
-101		FILE	"Engine/Splash.png"
+//101		FILE	"Engine/Splash.png"
+
+//effect sound
+200     FILE    "button.mp3"
+
+//judge pic
+210     FILE    "judgePic/P.png"
+211     FILE    "judgePic/S.png"
+212     FILE    "judgePic/A.png"
+213     FILE    "judgePic/B.png"
+214     FILE    "judgePic/C.png"
+215     FILE    "judgePic/D.png"
+216     FILE    "judgePic/E.png"
+
+//pedal pic
+220     FILE    "pedal.png"

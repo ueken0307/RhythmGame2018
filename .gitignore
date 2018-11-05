@@ -4,6 +4,8 @@ obj
 ipch
 Engine
 Example
+Musics
+ScreenShot
 
 *.sdf
 *.html
@@ -16,3 +18,4 @@ Example
 *.db
 *.opendb
 *.vcxproj.user
+*.mp3
